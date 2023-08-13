@@ -1,25 +1,20 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>AttendanceApp</title>
+    <title>Attendance</title>
     <%= csrf_meta_tags %>
-
-    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <%= stylesheet_link_tag    'application', media: 'all',
+                               'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application',
+                               'data-turbolinks-track': 'reload' %>
+    <!-- HTML shimがこの1行で収まる -->
+    <%= render 'layouts/shim' %>
   </head>
-
   <body>
-    <header class="navbar navbar-fixed-top navbar-inverse">
-      <div class="container">
-        <%= link_to "勤怠システム", '#', id: "logo" %>
-        <nav>
-          <ul class="nav navbar-nav navbar-right">
-            <li><%= link_to "トップへ",   '#' %></li>
-            <li><%= link_to "アカウント", '#' %></li>
-          </ul>
-        </nav>
-      </div>
-    </header>    
-    <%= yield %>
+    <!-- headerの内容がこの1行で収まる -->
+    <%= render 'layouts/header' %>
+    <div class="container">
+      <%= yield %>
+    </div>
   </body>
 </html>

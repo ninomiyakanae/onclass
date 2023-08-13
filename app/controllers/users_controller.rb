@@ -1,5 +1,4 @@
-class UsersController < ApplicationController 
-    def edit
-      @user = User.find(params[:id])
-    end
+class UsersController < ApplicationController
+  def new
+  end
 end
