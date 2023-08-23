@@ -9,4 +9,4 @@ module ApplicationHelper
       page_name + " | " + base_title # 文字列を連結して返す
     end
   end
-end
+end  
