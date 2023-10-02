@@ -15,4 +15,10 @@ module AttendancesHelper
     format("%.2f", (((finish - start) / 60) / 60.0))
     # sprintf("%.2f", (((finish - start) / 60) / 60.0))
   end
+  
+  def convert_basic_time_to_number(basic_time)
+    # ここでbasic_time（例："8:00"）を数値（例：8.0）に変換する処理
+    # 今回は既に数値形式（例：8.0）であると仮定
+    basic_time.to_f
+  end
 end
