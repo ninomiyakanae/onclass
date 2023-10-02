@@ -87,3 +87,13 @@
 // #table-attendances tbody tr:nth-child(odd) {
 //   background-color: #f2f2f2;  /* ここで薄い灰色を指定しています */
 // }
+
+
+
+.odd-row {
+  background-color: lightgray; /* 薄い灰色 */
+}
+
+.even-row {
+  background-color: white; /* 白色 */
+}
