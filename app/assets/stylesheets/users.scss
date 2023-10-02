@@ -71,3 +71,8 @@
   width: 40px;              /* 枠の横幅を指定 */
 }
 
+.custom-button {
+  border: 2px solid gray;  /* 枠を灰色に */
+  background-color: #f2f2f2;  /* 背景を薄い灰色に */
+  color: black;  /* 文字を黒に */
+}
