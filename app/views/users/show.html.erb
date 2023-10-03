@@ -44,8 +44,8 @@
      </tr>
     </thead>  
     <tbody>
-    <% @attendances.each do |day| %>
-      <tr>
+    <% @attendances.each_with_index do |day, index| %>
+      <tr class="<%= index.even? ? 'even-row' : 'odd-row' %>">
         <td><%= l(day.worked_on, format: :short) %></td>
         <td><%= $days_of_the_week[day.worked_on.wday] %></td>
         <td><%= day.started_at.strftime("%H") if day.started_at.present? %></td>

@@ -78,22 +78,10 @@
 }
 
 
-// /* 一般的な行は白色にします */
-// #table-attendances tbody tr {
-//   background-color: white;
-// }
 
-// /* 奇数行は薄い灰色にします */
-// #table-attendances tbody tr:nth-child(odd) {
-//   background-color: #f2f2f2;  /* ここで薄い灰色を指定しています */
-// }
-
-
-
-// .odd-row {
-//   background-color: lightgray; /* 薄い灰色 */
-// }
-
-// .even-row {
-//   background-color: white; /* 白色 */
-// }
+.even-row {
+  background-color: rgba(128, 128, 128, 0.1);  /* 更に薄いグレーに設定 */
+}
+.odd-row {
+  background-color: white;
+}
