@@ -50,15 +50,15 @@
         <td class="<%= day.worked_on.wday == 6 ? 'saturday' : day.worked_on.wday == 0 ? 'sunday' : 'weekday' %>">
           <%= $days_of_the_week[day.worked_on.wday] %>
         </td>
-        <td><%= day.started_at.strftime("%H") if day.started_at.present? %></td>
-        <td><%= day.started_at.strftime("%M") if day.started_at.present? %></td>
+        <td><%= day.started_at.floor_to(15.minutes).strftime("%H") if day.started_at.present? %></td>
+        <td><%= day.started_at.floor_to(15.minutes).strftime("%M") if day.started_at.present? %></td>
         <td>
           <% if day.started_at.blank? && (btn_text = attendance_state(day)) %>
             <%= link_to "#{btn_text}登録", user_attendance_path(@user, day), method: :patch, class: "btn btn-primary btn-attendance" %>
           <% end %>
         </td>    
-        <td><%= day.finished_at.strftime("%H") if day.finished_at.present? %></td>
-        <td><%= day.finished_at.strftime("%M") if day.finished_at.present? %></td>
+        <td><%= day.finished_at.floor_to(15.minutes).strftime("%H") if day.finished_at.present? %></td>
+        <td><%= day.finished_at.floor_to(15.minutes).strftime("%M") if day.finished_at.present? %></td>
         <td>
         　<% if day.started_at.present? && day.finished_at.blank? && (btn_text = attendance_state(day)) %>
             <%= link_to "#{btn_text}登録", user_attendance_path(@user, day), method: :patch, class: "btn btn-primary btn-attendance" %>
