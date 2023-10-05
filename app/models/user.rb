@@ -49,4 +49,12 @@ class User < ApplicationRecord
   def forget
     update_attribute(:remember_digest, nil)
   end
+  
+   def self.search(search) #self.はUser.を意味する
+     if search
+      @users = User.where(['name LIKE ?', "%#{search}%"]) #検索とuseanameの部分一致を表示。
+     else
+       User.all #全て表示させる
+     end   
+   end   
 end
