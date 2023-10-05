@@ -31,19 +31,16 @@ class AttendancesController < ApplicationController
     redirect_to @user
   end
   
-  def show
-    @user = User.find(params[:id])
-    unless current_user == @user || current_user.admin?
-      @user = nil
-    end
-    # その他の処理
-  end
-  
-def edit_one_month
+def show
   @user = User.find(params[:id])
   @allowed_to_view = current_user == @user || current_user.admin?
   # その他の処理
 end
+  def edit_one_month
+    @user = User.find(params[:id])
+    @allowed_to_view = current_user == @user || current_user.admin?
+    # その他の処理
+  end
 
   def update_one_month
       ActiveRecord::Base.transaction do

@@ -43,6 +43,7 @@
       <td>時</td><td>分</td><td></td>
      </tr>
     </thead>  
+    
     <tbody>
     <% @attendances.each_with_index do |day, index| %>
       <tr class="<%= index.even? ? 'even-row' : 'odd-row' %>">
