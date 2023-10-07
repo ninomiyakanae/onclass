@@ -30,16 +30,20 @@ class AttendancesController < ApplicationController
     end
     redirect_to @user
   end
-  
-def show
-  @user = User.find(params[:id])
-  @allowed_to_view = current_user == @user || current_user.admin?
-  # その他の処理
-end
+    
+  def show
+    @user = User.find(params[:id])
+    @allowed_to_view = current_user == @user || current_user.admin?
+    # その他の処理
+  end
   def edit_one_month
     @user = User.find(params[:id])
     @allowed_to_view = current_user == @user || current_user.admin?
     # その他の処理
+    unless @allowed_to_view
+      redirect_to root_path
+      return
+    end    
   end
 
   def update_one_month
