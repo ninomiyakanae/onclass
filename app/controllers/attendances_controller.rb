@@ -5,11 +5,12 @@ class AttendancesController < ApplicationController
   before_action :set_one_month, only: :edit_one_month
 
 
-
-  
-  
-
   UPDATE_ERROR_MSG = "勤怠登録に失敗しました。やり直してください。"
+  
+  def working
+    @attendances = Attendance.where(worked_on: Date.current).where.not(started_at: nil).where(finished_at: nil)
+    @users = User.all.includes(:attendances)
+  end  
 
   def update
     @user = User.find(params[:user_id])
