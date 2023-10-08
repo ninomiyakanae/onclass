@@ -1,9 +1,9 @@
 class AttendancesController < ApplicationController
   before_action :set_user, only: [:edit_one_month, :update_one_month]
   before_action :logged_in_user, only: [:update, :edit_one_month]
-  before_action :admin_or_correct_user, only: [:update, :update_one_month]
+  before_action :admin_or_correct_user, only: [:update, :update_one_month, :edit_one_month ]
   before_action :set_one_month, only: :edit_one_month
-  # before_action :correct_user, only: [:show, :edit_one_month]
+
 
 
   
@@ -32,19 +32,13 @@ class AttendancesController < ApplicationController
   end
     
   def show
-    @user = User.find(params[:id])
-    @allowed_to_view = current_user == @user || current_user.admin?
-    # その他の処理
   end
+
+  
+
   def edit_one_month
-    @user = User.find(params[:id])
-    @allowed_to_view = current_user == @user || current_user.admin?
-    # その他の処理
-    unless @allowed_to_view
-      redirect_to root_path
-      return
-    end    
   end
+
 
   def update_one_month
       ActiveRecord::Base.transaction do
@@ -84,14 +78,4 @@ class AttendancesController < ApplicationController
       redirect_to(root_url)
     end  
   end
-
-  # def correct_user
-  #     # @monthがnilでない、かつ（current_userが管理者であるか、@monthがcurrent_userに属している）場合
-  #   if @month && (current_user.admin? || @month.user_id == current_user.id)
-  #       # 何もしない（通常の処理を続行）
-  #   else
-  #     @month = nil
-  #     @attendances = []
-  #   end
-  # end 
 end
