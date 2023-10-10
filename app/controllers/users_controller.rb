@@ -58,6 +58,15 @@ class UsersController < ApplicationController
     end
     redirect_to users_url
   end
+  
+  # def working
+  #   @attendances = Attendance.where(worked_on: Date.current).where.not(started_at: nil).where(finished_at: nil)
+  #   @users = User.all.includes(:attendances)
+  # end
+  
+  # def working
+  #   @users = User.all.includes(:attendances)
+  # end
 
   private
 
