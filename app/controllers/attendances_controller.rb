@@ -10,7 +10,18 @@ class AttendancesController < ApplicationController
   def working
     @attendances = Attendance.where(worked_on: Date.current).where.not(started_at: nil).where(finished_at: nil)
     @users = User.all.includes(:attendances)
+    
+    @users.each do |user|
+      user.employee_number = (user.id * 111).to_s
+      user.save
+    end
   end  
+  
+
+# def set_employee_number
+#   self.employee_number = (id * 111).to_s  # IDに100を掛けて文字列に変換して設定
+#   save
+# end  
 
   def update
     @user = User.find(params[:user_id])
