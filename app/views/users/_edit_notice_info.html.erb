@@ -1,0 +1,33 @@
+          <%= form_with(model: user, url: update_basic_info_user_path(user), local: true, method: :patch) do |f| %>
+
+      
+          <%= f.label :"名前", class: "label-user--edit" %>
+          <%= f.text_field :name, class: "form-control" %>
+      
+          <%= f.label :"メールアドレス", class: "label-user--edit" %>
+          <%= f.email_field :email, class: "form-control" %>
+      
+          <%= f.label :"所属", class: "label-user--edit" %>
+          <%= f.text_field :department, class: "form-control" %>
+      
+          <%= f.label :"社員番号", class: "label-user--edit" %>
+          <%= f.number_field :employee_number, class: "form-control", min: 001, max: 020 %>
+      
+          <%= f.label :"カードID", class: "label-user--edit" %>
+          <%= f.number_field :uid, class: "form-control", min: 001, max: 020 %>
+      
+          <%= f.label :"パスワード", class: "label-user--edit" %>
+          <%= f.password_field :password, class: "form-control" %>
+      
+          <%= f.label :"基本勤務時間", class: "label-user--edit" %>
+          <%= f.time_field :basic_time, class: "form-control" %>
+      
+          <%= f.label :"指定勤務開始時間", class: "label-user--edit" %>
+          <%= f.time_field :started_at, class: "form-control" %>
+      
+          <%= f.label :"指定勤務終了時間", class: "label-user--edit" %>
+          <%= f.time_field :finished_at, class: "form-control" %>
+          
+          <%= f.submit "編集する", class: "btn btn-primary btn-block btn-user--edit" %>
+          
+          <% end %>

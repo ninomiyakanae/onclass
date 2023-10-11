@@ -1,3 +1,4 @@
+require 'csv'
 class User < ApplicationRecord
   has_many :attendances, dependent: :destroy
   # 「remember_token」という仮想の属性を作成します。
@@ -60,4 +61,54 @@ class User < ApplicationRecord
        User.all #全て表示させる
      end   
    end   
+       
+   def self.import(file)
+     return if file.nil?
+    
+    begin
+      CSV.foreach(file.path, headers: true, encoding: 'UTF-8') do |row|
+          # IDが見つかれば、レコードを呼び出し、見つかれなければ、新しく作成
+         user = find_by(id: row["id"]) || new
+          # CSVからデータを取得し、設定する
+        user.attributes = row.to_hash.slice(*updatable_attributes)
+          # 保存する
+        user.save
+       end
+    rescue CSV::MalformedCSVError => e
+       puts "CSVファイルに問題がありました: #{e.message}"
+        # ここでエラーを捕捉して処理を行う。必要に応じてログを出力したり、通知を送ったりする。
+    end
+   end
+  
+#   def self.updatable_attributes
+#     ["name","email","affiliation","employee_number"]
+#   end
+# end  
+
+  # 更新を許可するカラムを定義
+  def self.updatable_attributes
+    ["name","email","affiliation","employee_number",
+    "uid","basic_work_time","designated_work_start_time",
+    "designated_work_end_time","superior","admin","password"]
+  end
 end
+   
+   
+  # def self.import(file)
+  #   CSV.foreach(file.path, headers: true) do |row|
+  #     # IDが見つかれば、レコードを呼び出し、見つかれなければ、新しく作成
+  #     user = find_by(id: row["id"]) || new
+  #     # CSVからデータを取得し、設定する
+  #     user.attributes = row.to_hash.slice(*updatable_attributes)
+  #     # 保存する
+  #     user.save
+  #   end
+  # end 
+
+  # # 更新を許可するカラムを定義
+  # def self.updatable_attributes
+  #   ["name","email","affiliation","employee_number",
+  #   "uid","basic_work_time","designated_work_start_time",
+  #   "designated_work_end_time","superior","admin","password"]
+  # end
+

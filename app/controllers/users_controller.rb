@@ -7,7 +7,25 @@ class UsersController < ApplicationController
   before_action :admin_or_correct_user, only: :show
   
   def index
-    @users = User.where.not(id: 1).paginate(page: params[:page]).search(params[:search])
+    @users = User.paginate(page: params[:page], per_page: 10)
+    @user = current_user # これがログイン中のユーザーを取得するメソッドであれば
+  end  
+  
+  # def index
+  #   @users = User.where.not(id: 1).paginate(page: params[:page]).search(params[:search])
+  #   # @users = User.all
+  # end
+  
+  def import
+    file = params[:file]
+    if file.nil?
+      flash[:danger] = "ファイルが選択されていません"
+      redirect_to users_url and return
+    end
+  
+    User.import(file)
+    flash[:success] = "データのインポートに成功しました"
+    redirect_to users_url
   end
 
   def show
@@ -59,15 +77,22 @@ class UsersController < ApplicationController
     redirect_to users_url
   end
   
-  # def working
-  #   @attendances = Attendance.where(worked_on: Date.current).where.not(started_at: nil).where(finished_at: nil)
-  #   @users = User.all.includes(:attendances)
+  # def import
+  #   if params[:file].blank?
+  #     flash[:danger] = "csvファイルを選択してください"
+  #   else
+  #     User.import(params[:file])
+  #     flash[:success] = "csvファイルをインポートしました。"
+  #   end
+  #   redirect_to users_url
   # end
   
-  # def working
-  #   @users = User.all.includes(:attendances)
-  # end
-
+  # def import
+  #   # fileはtmpに自動で一時保存される
+  #   User.import(params[:file])
+  #   redirect_to users_url
+  # end  
+  
   private
 
     def user_params
