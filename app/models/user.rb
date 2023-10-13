@@ -12,7 +12,7 @@ class User < ApplicationRecord
                     format: { with: VALID_EMAIL_REGEX },
                     uniqueness: true
   validates :department, length: { in: 2..50 }, allow_blank: true
-  validates :employee_number, presence: true, uniqueness: true
+  # validates :employee_number, presence: true, uniqueness: true
   # validates :employee_number, presence: true, allow_blank: true
   validates :basic_time, presence: true
   validates :work_time, presence: true
@@ -101,12 +101,12 @@ class User < ApplicationRecord
 # end
 
   
-  # 更新を許可するカラムを定義
-  def self.updatable_attributes
-    ["name","email","affiliation","employee_number",
-    "uid","basic_work_time","designated_work_start_time",
-    "designated_work_end_time","superior","admin","password"]
-  end
+#   # 更新を許可するカラムを定義
+#   def self.updatable_attributes
+#     ["name","email","affiliation","employee_number",
+#     "uid","basic_work_time","designated_work_start_time",
+#     "designated_work_end_time","superior","admin","password"]
+#   end
 end
 #   # 更新を許可するカラムを定義
 #   def self.updatable_attributes

@@ -32,7 +32,8 @@ class UsersController < ApplicationController
   
   def import
     User.import(params[:file])
-    redirect_to root_url, notice: "Users imported."
+    redirect_to root_url
+    flash[:success] = 'importedに成功しました。'
   end
 
   def show
