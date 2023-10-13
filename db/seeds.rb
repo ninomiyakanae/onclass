@@ -1,17 +1,17 @@
-# coding: utf-8
+# require "csv"
 
-User.create!(name: "Sample User",
-             email: "sample@email.com",
-             password: "password",
-             password_confirmation: "password",
-             admin: true)
-
-60.times do |n|
-  name  = Faker::Name.name
-  email = "sample-#{n+1}@email.com"
-  password = "password"
-  User.create!(name: name,
-               email: email,
-               password: password,
-               password_confirmation: password)
-end
+# CSV.foreach('db/csv/users.csv', headers: true) do |row|
+#   User.create!(
+#     name: row['name'],
+#     email: row['email'],
+#     department: row['department'],
+#     employee_number: row['employee_number'],
+#     uid: row['uid'],
+#     basic_time: row['basic_time'],
+#     started_at: row['started_at'],
+#     finished_at: row['finished_at'],
+#     superior: row['superior'] == 'TRUE',
+#     admin: row['admin'] == 'TRUE',
+#     password: row['password']
+#   )
+# end

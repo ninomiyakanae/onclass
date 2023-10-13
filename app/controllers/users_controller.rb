@@ -8,24 +8,31 @@ class UsersController < ApplicationController
   
   def index
     @users = User.paginate(page: params[:page], per_page: 10)
-    @user = current_user # これがログイン中のユーザーを取得するメソッドであれば
-  end  
-  
+    # respond_to do |format|
+    #   format.html # HTML形式のレスポンスを処理
+    #   format.csv { send_data @users.to_csv, filename: "users-#{Date.today}.csv" } # CSV形式のレスポンスを処理
+  end
+    # @user = current_user # これがログイン中のユーザーを取得するメソッドであれば
+
   # def index
   #   @users = User.where.not(id: 1).paginate(page: params[:page]).search(params[:search])
   #   # @users = User.all
   # end
   
-  def import
-    file = params[:file]
-    if file.nil?
-      flash[:danger] = "ファイルが選択されていません"
-      redirect_to users_url and return
-    end
+  # def import
+  #   file = params[:file]
+  #   if file.nil?
+  #     flash[:danger] = "ファイルが選択されていません"
+  #     redirect_to users_url and return
+  #   end
+  #   User.import(file)
+  #   flash[:success] = "データのインポートに成功しました"
+  #   redirect_to users_url
+  # end
   
-    User.import(file)
-    flash[:success] = "データのインポートに成功しました"
-    redirect_to users_url
+  def import
+    User.import(params[:file])
+    redirect_to root_url, notice: "Users imported."
   end
 
   def show
