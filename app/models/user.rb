@@ -64,69 +64,14 @@ class User < ApplicationRecord
    
   def self.import(file)
     CSV.foreach(file.path, headers: true) do |row|
-      user = User.new
+      user = User.find_by(email: row["email"]) || User.new # 既存のユーザーを探すか新しいユーザーを作成
       user.attributes = row.to_hash.slice(*["name", "email", "affiliation", "employee_number", "uid", "basic_work_time", "designated_work_start_time", "designated_work_end_time", "superior", "admin", "password"])
-      user.save!
+      
+      unless user.save # ユーザーの保存を試み、失敗したらエラーメッセージを出力
+        puts "Failed to save user with email #{row['email']}: #{user.errors.full_messages.join(", ")}"
+      end
     end
   end
-
-  # def self.to_csv
-  #   attributes = %w{name email department employee_number uid basic_time started_at finished_at superior admin password} # ここに出力したいカラム名を書く
-
-  #   CSV.generate(headers: true) do |csv|
-  #     csv << attributes
-
-  #     all.each do |user|
-  #       csv << attributes.map { |attr| user.send(attr) }
-  #     end
-  #   end
-  # end
-  
-# require "csv"
-
-# CSV.foreach('db/csv/users.csv', headers: true) do |row|
-#   User.create!(
-#     name: row['name'],
-#     email: row['email'],
-#     department: row['department'],
-#     employee_number: row['employee_number'],
-#     uid: row['uid'],
-#     basic_time: row['basic_time'],
-#     started_at: row['started_at'],
-#     finished_at: row['finished_at'],
-#     superior: row['superior'],
-#     admin: row['admin'],
-#     password: row['password']
-#   )
-# end
-
-  
-#   # 更新を許可するカラムを定義
-#   def self.updatable_attributes
-#     ["name","email","affiliation","employee_number",
-#     "uid","basic_work_time","designated_work_start_time",
-#     "designated_work_end_time","superior","admin","password"]
-#   end
-end
-#   # 更新を許可するカラムを定義
-#   def self.updatable_attributes
-#     ["name","email","department","employee_number",
-#     "uid","basic_time","started_at",
-#     "finished_at","admin","password"]
-#   end
-# end
-   
-   
-  # def self.import(file)
-  #   CSV.foreach(file.path, headers: true) do |row|
-  #     # IDが見つかれば、レコードを呼び出し、見つかれなければ、新しく作成
-  #     user = find_by(id: row["id"]) || new
-  #     # CSVからデータを取得し、設定する
-  #     user.attributes = row.to_hash.slice(*updatable_attributes)
-  #     # 保存する
-  #     user.save
-  #   end
-  # end 
-
+end  
 
 
