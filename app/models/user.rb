@@ -61,37 +61,23 @@ class User < ApplicationRecord
        User.all #全て表示させる
      end   
    end   
-def self.import(file)
-  failed_emails = []
-
-  CSV.foreach(file.path, headers: true) do |row|
-    existing_user = User.find_by(email: row["email"])
-    
-    if existing_user
-      failed_emails << row['email']
-    else
-      user = User.new
-      user.attributes = row.to_hash.slice(*["name", "email", "affiliation", "employee_number", "uid", "basic_work_time", "designated_work_start_time", "designated_work_end_time", "superior", "admin", "password"])
-      user.save!
-    end
-  end
+   
+  def self.import(file)
+    failed_emails = []
   
-  failed_emails
-end
-
-  def import
-    failed_emails = User.import(params[:file])
-  
-    if failed_emails.empty?
-      flash[:success] = 'インポートに成功しました。'
-    else
-      flash[:danger] = "メールアドレス #{failed_emails.join(', ')} はすでに存在します。"
+    CSV.foreach(file.path, headers: true) do |row|
+      existing_user = User.find_by(email: row["email"])
+      
+      if existing_user
+        failed_emails << row['email']
+      else
+        user = User.new
+        user.attributes = row.to_hash.slice(*["name", "email", "affiliation", "employee_number", "uid", "basic_work_time", "designated_work_start_time", "designated_work_end_time", "superior", "admin", "password"])
+        user.save!
+      end
     end
     
-    redirect_to root_url
+    failed_emails
   end
 end
-
-
-
 
