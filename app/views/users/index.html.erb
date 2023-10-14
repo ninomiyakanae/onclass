@@ -22,6 +22,7 @@
   <%= will_paginate %>
   <table class="table table-condensed table-hover" id="table-users">
     <% @users.each do |user| %>
+      <% unless user.admin? %>
  
     <%= link_to user.name, user %>
     <div class="bb">
@@ -41,6 +42,7 @@
               </div>
             </div>
           </thead>  
+      <% end %>    
     <% end %>    
     
 <!--モーダルウインドウ表示-->

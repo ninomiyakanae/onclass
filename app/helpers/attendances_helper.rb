@@ -3,8 +3,8 @@ module AttendancesHelper
   def attendance_state(attendance)
     # 受け取ったAttendanceオブジェクトが当日と一致するか評価します。
     if Date.current == attendance.worked_on
-      return '出勤' if attendance.started_at.nil?
-      return '退勤' if attendance.started_at.present? && attendance.finished_at.nil?
+      return '出勤' if attendance.designated_work_start_time.nil?
+      return '退勤' if attendance.designated_work_start_time.present? && attendance.designated_work_end_time.nil?
     end
     # どれにも当てはまらなかった場合はfalseを返します。
     return false
@@ -16,9 +16,9 @@ module AttendancesHelper
     # sprintf("%.2f", (((finish - start) / 60) / 60.0))
   end
   
-  def convert_basic_time_to_number(basic_time)
+  def convert_basic_time_to_number(basic_work_time)
     # ここでbasic_time（例："8:00"）を数値（例：8.0）に変換する処理
     # 今回は既に数値形式（例：8.0）であると仮定
-    basic_time.to_f
+   basic_work_time.to_f
   end
 end

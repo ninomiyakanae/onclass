@@ -8,7 +8,7 @@ class AttendancesController < ApplicationController
   UPDATE_ERROR_MSG = "勤怠登録に失敗しました。やり直してください。"
   
   def working
-    @attendances = Attendance.where(worked_on: Date.current).where.not(started_at: nil).where(finished_at: nil)
+    @attendances = Attendance.where(worked_on: Date.current).where.not(designated_work_start_time: nil).where(designated_work_end_time: nil)
     @users = User.all.includes(:attendances)
     
     @users.each do |user|
@@ -27,14 +27,14 @@ class AttendancesController < ApplicationController
     @user = User.find(params[:user_id])
     @attendance = Attendance.find(params[:id])
     # 出勤時間が未登録であることを判定します。
-    if @attendance.started_at.nil?
-      if @attendance.update_attributes(started_at: Time.current.floor_to(15.minutes).change(sec: 0)) 
+    if @attendance.designated_work_start_time.nil?
+      if @attendance.update_attributes(designated_work_start_time: Time.current.floor_to(15.minutes).change(sec: 0)) 
         flash[:info] = "おはようございます！"
       else
         flash[:danger] = UPDATE_ERROR_MSG
       end
-    elsif @attendance.finished_at.nil?
-      if @attendance.update_attributes(finished_at: Time.current.floor_to(15.minutes).change(sec: 0))  
+    elsif @attendance.designated_work_end_time.nil?
+      if @attendance.update_attributes(designated_work_end_time: Time.current.floor_to(15.minutes).change(sec: 0))  
         flash[:info] = "お疲れ様でした。"
       else
         flash[:danger] = UPDATE_ERROR_MSG
@@ -55,7 +55,7 @@ class AttendancesController < ApplicationController
   def update_one_month
       ActiveRecord::Base.transaction do
         attendances_params.each do |id, item|
-          if item[:started_at].present? && item[:finished_at].blank?
+          if item[:designated_work_start_time].present? && item[:designated_work_end_time].blank?
             flash[:danger] = "退勤も更新してください"
             redirect_to attendances_edit_one_month_user_url(date: params[:date])and return
           end  
@@ -76,7 +76,7 @@ class AttendancesController < ApplicationController
 
     # 1ヶ月分の勤怠情報を扱います。
   def attendances_params
-    params.require(:user).permit(attendances: [:started_at, :finished_at, :note])[:attendances]
+    params.require(:user).permit(attendances: [:designated_work_start_time, :designated_work_end_time, :note])[:attendances]
   end
 
     # beforeフィルター

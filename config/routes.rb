@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
   root 'static_pages#top'
   get '/signup', to: 'users#new'
+  
+  
 
   # ログイン機能
   get    '/login', to: 'sessions#new'
@@ -18,6 +20,8 @@ Rails.application.routes.draw do
       patch 'attendances/update_one_month' # この行が追加対象です。
       get 'attendances/working'
     end
+    
+    
     
     resources :attendances, only: :update
   end
