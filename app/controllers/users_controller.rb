@@ -30,16 +30,18 @@ class UsersController < ApplicationController
   #   redirect_to users_url
   # end
   
-   def import
-    # ファイルのインポート処理など
-    User.import(params[:file])
+  def import
+    failed_emails = User.import(params[:file])
+  
+    if failed_emails.empty?
+      flash[:success] = 'インポートに成功しました。'
+    else
+      flash[:danger] = "メールアドレス #{failed_emails.join(', ')} はすでに存在します。"
+    end
     
-    # ダウンロードさせたいCSVファイルへのパス
-    file_path = "#{Rails.root}/path/to/your/file.csv"
-    
-    # ファイルをダウンロードさせる
-    send_file file_path, filename: "your_file.csv", type: "application/csv"
-   end
+    redirect_to users_path
+  end
+
   def show
     @worked_sum = @attendances.where.not(started_at: nil).count
   end
