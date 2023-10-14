@@ -6,6 +6,7 @@ class UsersController < ApplicationController
   before_action :set_one_month, only: :show
   before_action :admin_or_correct_user, only: :show
   
+  
   def index
     @users = User.paginate(page: params[:page], per_page: 10)
     # respond_to do |format|
