@@ -19,17 +19,7 @@ class UsersController < ApplicationController
   #   @users = User.where.not(id: 1).paginate(page: params[:page]).search(params[:search])
   #   # @users = User.all
   # end
-  
-  # def import
-  #   file = params[:file]
-  #   if file.nil?
-  #     flash[:danger] = "ファイルが選択されていません"
-  #     redirect_to users_url and return
-  #   end
-  #   User.import(file)
-  #   flash[:success] = "データのインポートに成功しました"
-  #   redirect_to users_url
-  # end
+
   
   def import
     failed_emails = User.import(params[:file])
@@ -91,22 +81,6 @@ class UsersController < ApplicationController
     end
     redirect_to users_url
   end
-  
-  # def import
-  #   if params[:file].blank?
-  #     flash[:danger] = "csvファイルを選択してください"
-  #   else
-  #     User.import(params[:file])
-  #     flash[:success] = "csvファイルをインポートしました。"
-  #   end
-  #   redirect_to users_url
-  # end
-  
-  # def import
-  #   # fileはtmpに自動で一時保存される
-  #   User.import(params[:file])
-  #   redirect_to users_url
-  # end  
   
   private
 
