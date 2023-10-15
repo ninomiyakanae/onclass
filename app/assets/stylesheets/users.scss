@@ -64,11 +64,11 @@
 
 
 .arrow-box {
-  border: 2px solid silver;  /* 枠線の設定 */
-  padding: 5px;               /* 内側の余白設定 */
+  // border: 2px solid silver;  /* 枠線の設定 */
+  padding: 3px;               /* 内側の余白設定 */
   display: inline-block;      /* インライン要素として配置 */
   border-radius: 10px;        /* 角を丸くする設定 */
-  width: 40px;              /* 枠の横幅を指定 */
+  width: 20px;              /* 枠の横幅を指定 */
 }
 
 .custom-button {
