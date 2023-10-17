@@ -5,6 +5,7 @@ class UsersController < ApplicationController
   before_action :admin_user, only: [:destroy, :edit_basic_info, :update_basic_info]
   before_action :set_one_month, only: :show
   before_action :admin_or_correct_user, only: :show
+  before_action :superior_user, only: :show  
   
   
   def index
@@ -33,9 +34,39 @@ class UsersController < ApplicationController
     redirect_to users_path
   end
 
-  def show
-    @worked_sum = @attendances.where.not(designated_work_start_time: nil).count
-  end
+  # def show
+  #   # @worked_sum = @attendances.where.not(designated_work_start_time: nil).count
+  # end
+  
+ def show
+    if current_user.admin?
+       redirect_to root_url
+    else
+      @attendance = Attendance.find(params[:id])
+      @worked_sum = @attendances.where.not(started_at: nil).count
+      @superior = User.where(superior: true).where.not(id: @user.id)
+      # 残業申請のお知らせボタン
+      @notice_users = User.where(id: Attendance.where.not(schedule: nil).select(:user_id)).where.not(id: current_user)
+      @notice_users.each do |user|
+        @attendances_list = Attendance.where.not(schedule: nil).where(overtime_check: false).where(confirmation: current_user.name)
+        @endtime_notice_sum = @attendances_list.count
+        @attendances_list.each do |att_notice|
+          @att_notice = att_notice
+        end
+    end
+      # 所属長承認申請お知らせリスト(上長)
+    @approval_notice_lists = Approval.where(confirm: "申請中").where(approval_flag: false).where(superior_id: current_user)
+    @approval_notice_lists.each do |app|
+      @superior_approval = app
+    end
+      # 所属長承認申請合計
+    @approval_notice_sum = @approval_notice_lists.count
+
+      # if current_user.superior?
+      #   @overwork_sum = Attendance.includes(:user).where(superior_confirmation: current_user.id,overwork_status:　"申請中").count
+      # end
+    end
+ end  
 
   def new
     @user = User.new
