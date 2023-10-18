@@ -26,27 +26,27 @@
   </table>
 </div>
     <!-- 所属長承認申請のお知らせボタン -->
-    <% if logged_in? && current_user.superior? %>
-      <% if current_user.superior? && @user.superior == false  %>
-      <% else %>
-        <div class="superior">
-          <% if @approval_notice_lists.present? %>
-            <% unless @superior_approval.confirm == "承認" || @superior_approval.confirm == "否認" %>
-              <%= link_to "【所属長承認申請のお知らせ】", approvals_edit_user_path(@user), remote: true, :style=>"color:red;", class: "superior_tag" %>
-              <span>
-                <strong>
-                  <%= link_to "#{@approval_notice_sum}件の通知があります", approvals_edit_user_path(@user), remote: true, :style=>"color:red;", class: "superior_tag" %>
-                </strong>
-              </span>
-            <% else %>
-              <p class="not_notice">【所属長承認申請のお知らせ】</p>
-            <% end %>
-          <% else %>
-            <p class="not_notice">【所属長承認申請のお知らせ】</p>
-          <% end %>　
-         </div>
-        <% end %>
-      <% end %>
+    <!--< % if logged_in? && current_user.superior? %>-->
+    <!--  < % if current_user.superior? && @user.superior == false  %>-->
+    <!--  < % else %>-->
+    <!--    <div class="superior">-->
+    <!--      < % if @approval_notice_lists.present? %>-->
+    <!--        < % unless @superior_approval.confirm == "承認" || @superior_approval.confirm == "否認" %>-->
+    <!--          < %= link_to "【所属長承認申請のお知らせ】", approvals_edit_user_path(@user), remote: true, :style=>"color:red;", class: "superior_tag" %>-->
+    <!--          <span>-->
+    <!--            <strong>-->
+    <!--              < %= link_to "#{@approval_notice_sum}件の通知があります", approvals_edit_user_path(@user), remote: true, :style=>"color:red;", class: "superior_tag" %>-->
+    <!--            </strong>-->
+    <!--          </span>-->
+    <!--        < % else %>-->
+    <!--          <p class="not_notice">【所属長承認申請のお知らせ】</p>-->
+    <!--        < % end %>-->
+    <!--      < % else %>-->
+    <!--        <p class="not_notice">【所属長承認申請のお知らせ】</p>-->
+    <!--      < % end %>　-->
+    <!--     </div>-->
+    <!--    < % end %>-->
+    <!--  < % end %>-->
           
 <div class="btn-users-show">
   <%= link_to "勤怠を編集", attendances_edit_one_month_user_path(date: @first_day), class: "btn btn-primary" %>
@@ -84,7 +84,7 @@
     <tbody>
     <% @attendances.each_with_index do |day, index| %>
       <tr class="<%= index.even? ? 'even-row' : 'odd-row' %>">
-        <td><%= link_to "残業申請","＃", class: "btn btn-primary" %></td>
+        <td><%= link_to "残業申請",attendances__fotm_overwork_info_user_path, class: "btn btn-primary" %></td>
         <td><%= l(day.worked_on, format: :short) %></td>
         <td class="<%= day.worked_on.wday == 6 ? 'saturday' : day.worked_on.wday == 0 ? 'sunday' : 'weekday' %>">
           <%= $days_of_the_week[day.worked_on.wday] %>
@@ -112,8 +112,22 @@
           <% end %>
         </td>        
         <td><%= day.note %></td>
-        <td></td>
-        <td></td>
+        <!-- 終了予定時間（時） -->
+        <td>
+         <% if day.tomorrow_check == true %>
+           <%= day.schedule.tomorrow.strftime("%H") if day.schedule.present? %>
+         <% else %>
+           <%= day.schedule.strftime("%H") if day.schedule.present? %>
+         <% end %>
+        </td>
+        <!-- 終了予定時間（分） -->
+        <td>
+         <% if day.tomorrow_check == true %>
+           <%= day.schedule.floor_to(15.minutes).tomorrow.strftime("%M") if day.schedule.present? %>
+         <% else %>
+           <%= day.schedule.floor_to(15.minutes).strftime("%M") if day.schedule.present? %>
+         <% end %>
+        </td>
         <td></td>
         <td></td>
         <td></td>        
@@ -124,55 +138,55 @@
     <tfoot>
       <!--rowspan:縦結合、colspan：横結合-->
       <tr>
-        <td colspan="2"><%= sprintf('%.2f', @worked_sum * format_basic_info(@user.basic_work_time).to_f) %></td>
+        <!--< td colspan="2">< %= sprintf('%.2f', @worked_sum * format_basic_info(@user.basic_work_time).to_f) %></td>-->
         <td colspan="6"></td>
         <td><%= format("%.2f", @total_working_times.to_f) %></td>
         <td colspan="6"></td>
-       <td>
-              <% if current_user.superior? && @user.superior == false %>
-              <%= form_with(model: @approval_list, url: approvals_create_user_path(@user, @first_day), local: true) do |f| %>
-                <div class="approval">
-                  <p class="approval-btn">
-                    所属長承認:
-                    <% if @approval_list.present? %>
-                      <% if (@approval.confirm == "承認" || @approval.confirm == "否認") && @approval.approval_flag == false %>
-                        <%= @approval_superior.name %>【<strong><%= @approval.confirm %>済</strong>】
-                      <% elsif (@approval.confirm == "申請中" || @approval.superior_id.present?) && @approval.approval_flag == false %>
-                        <%= @approval_superior.name %>【<strong>申請中</strong>】
-                      <% else %>
-                        <%= "未" %>
-                      <% end %>
-                    <% else %>
-                      <%= "未" %>
-                    <% end %>
-                  </p>
-                <% if @approval_list.present? %>
+       <!--<td>-->
+       <!--       < % if current_user.superior? && @user.superior == false %>-->
+       <!--       < %= form_with(model: @approval_list, url: approvals_create_user_path(@user, @first_day), local: true) do |f| %>-->
+       <!--         <div class="approval">-->
+       <!--           <p class="approval-btn">-->
+       <!--             所属長承認:-->
+       <!--             < % if @approval_list.present? %>-->
+       <!--               < % if (@approval.confirm == "承認" || @approval.confirm == "否認") && @approval.approval_flag == false %>-->
+       <!--                 < %= @approval_superior.name %>【<strong>< %= @approval.confirm %>済</strong>】-->
+       <!--               < % elsif (@approval.confirm == "申請中" || @approval.superior_id.present?) && @approval.approval_flag == false %>-->
+       <!--                 < %= @approval_superior.name %>【<strong>申請中</strong>】-->
+       <!--               < % else %>-->
+       <!--                 < %= "未" %>-->
+       <!--               < % end %>-->
+       <!--             < % else %>-->
+       <!--               < %= "未" %>-->
+       <!--             < % end %>-->
+       <!--           </p>-->
+       <!--         < % if @approval_list.present? %>-->
                   <!-- 申請中以外の承認結果 -->
-                  <% unless @approval.confirm == "申請中" %> 
-                    <p class="approval-btn"><%= f.collection_select :name, @superiors, :id, :name, include_blank: true, class: "select" %></p>
+       <!--           < % unless @approval.confirm == "申請中" %> -->
+       <!--             <p class="approval-btn">< %= f.collection_select :name, @superiors, :id, :name, include_blank: true, class: "select" %></p>-->
                     <!-- 次月以降は操作不能 -->
-                    <% if (Date.current.next_month < @last_day) %>
-                      <%= f.submit "申請", disabled: true, class: "btn btn-primary w-50" %>
-                    <% else %>
-                      <%= f.submit "申請", class: "btn btn-primary w-50" %>
-                    <% end %>
-                  <% else %><!-- 承認&否認 -->
-                    <p class="approval-btn"><%= f.collection_select :name, {}, {}, {}, {}, disabled: true, class: "select" %></p>
-                    <%= f.submit "申請", disabled: true, class: "btn btn-primary w-50" %>
-                  <% end %>
-                <% else %><!-- 申請情報がない場合はここから -->
-                  <p class="approval-btn"><%= f.collection_select :name, @superiors, :id, :name, include_blank: true, class: "select" %></p>
-                  <% if (Date.current.next_month < @last_day) %>
-                    <%= f.submit "申請", disabled: true, class: "btn btn-primary w-50" %>
-                  <% else %>
-                    <%= f.submit "申請", class: "btn btn-primary w-50" %>
-                  <% end %>
-                <% end %>
-                </div>
-              <% end %>
-            <% end %>
-          </td>
-        </tr>
+       <!--             < % if (Date.current.next_month < @last_day) %>-->
+       <!--               < %= f.submit "申請", disabled: true, class: "btn btn-primary w-50" %>-->
+       <!--             < % else %>-->
+       <!--               < %= f.submit "申請", class: "btn btn-primary w-50" %>-->
+       <!--             < % end %>-->
+       <!--           < % else %><!-- 承認&否認 -->-->
+       <!--             <p class="approval-btn">< %= f.collection_select :name, {}, {}, {}, {}, disabled: true, class: "select" %></p>-->
+       <!--             < %= f.submit "申請", disabled: true, class: "btn btn-primary w-50" %>-->
+       <!--           < % end %>-->
+       <!--         < % else %><!-- 申請情報がない場合はここから -->-->
+       <!--           <p class="approval-btn">< %= f.collection_select :name, @superiors, :id, :name, include_blank: true, class: "select" %></p>-->
+       <!--           < % if (Date.current.next_month < @last_day) %>-->
+       <!--             < %= f.submit "申請", disabled: true, class: "btn btn-primary w-50" %>-->
+       <!--           < % else %>-->
+       <!--             < %= f.submit "申請", class: "btn btn-primary w-50" %>-->
+       <!--           < % end %>-->
+       <!--         < % end %>-->
+       <!--         </div>-->
+       <!--       < % end %>-->
+       <!--     < % end %>-->
+       <!--   </td>-->
+       <!-- </tr>-->
       </tfoot>
     </table>
   </div>

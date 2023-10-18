@@ -79,6 +79,9 @@ class AttendancesController < ApplicationController
     params.require(:user).permit(attendances: [:designated_work_start_time, :designated_work_end_time, :note])[:attendances]
   end
 
+  # def updated_time_params
+  #   params.require(:user).permit(attendances: [:designated_work_start_time, :designated_work_end_time, :tommorow_check, :note, :name])[:attendances]
+  # end
     # beforeフィルター
 
 
