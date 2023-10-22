@@ -5,7 +5,7 @@ class UsersController < ApplicationController
   before_action :admin_user, only: [:destroy, :edit_basic_info, :update_basic_info]
   before_action :set_one_month, only: :show
   before_action :admin_or_correct_user, only: :show
-  # before_action :superior_user, only: :show  
+  before_action :superior_user, only: [:edit_one_month, :update_one_month]
   
   
   def index
@@ -16,10 +16,10 @@ class UsersController < ApplicationController
   end
     # @user = current_user # これがログイン中のユーザーを取得するメソッドであれば
 
-  def index
-    @users = User.where.not(id: 1).paginate(page: params[:page]).search(params[:search])
-    # @users = User.all
-  end
+  # def index
+  #   @users = User.where.not(id: 1).paginate(page: params[:page]).search(params[:search])
+  #   # @users = User.all
+  # end
 
   
   def import
@@ -34,39 +34,65 @@ class UsersController < ApplicationController
     redirect_to users_path
   end
 
+  # def show
+  #   @worked_sum = @attendances.where.not(designated_work_start_time: nil).count
+  # end
+  
   def show
-    @worked_sum = @attendances.where.not(designated_work_start_time: nil).count
+    if current_user.admin?
+      redirect_to root_url
+    else
+      @attendance = Attendance.find(params[:id])
+      @worked_sum = @attendances.where.not(designated_work_start_time: nil).count
+      @superiors = User.where(superior: true).where.not(id: @user.id)
+      # @approval_count = Attendance.where(superior_id: current_user.id).count
+      @notice_users = User.where(id: Attendance.where.not(schedule: nil).select(:user_id)).where.not(id: current_user)
+       @notice_users.each do |user|
+         
+      @attendances_list = Attendance.where.not(schedule: nil).where(overtime_check: false).where(confirmation: current_user.name)   
+      @endtime_notice_sum = @attendances_list.count
+      @attendances_list.each do |att_notice|
+      @att_notice = att_notice  
+         
+      @att_update_list = Attendance.where(attendance_change_check: false).where(attendance_change_flag: true).where(confirmation: current_user.name)   
+      @att_update_sum = @att_update_list.count
+      @att_update_list.each do |att_up|
+        @att_up = att_up
+      end
+      
+      @attendance = Attendance.find_by(worked_on: @first_day)
+      
+      @approval_list = Approval.where(month_at: @first_day).where(user_id: current_user)
+      @approval_list.each do |approval|
+        @approval = approval
+        @approval_superior = User.find_by(id: @approval.superior_id)
+      end    
+      
+      @approval_notice_lists = Approval.where(confirm: "申請中").where(approval_flag: false).where(superior_id: current_user)
+      @approval_notice_lists.each do |app|
+        @superior_approval = app
+      end      
+         
+      @approval_notice_sum = @approval_notice_lists.count     
+    end
+    end
+    end
   end
   
-# def show
-#     if current_user.admin?
-#       redirect_to root_url
-#     else
-#       @attendance = Attendance.find(params[:id])
-#       @worked_sum = @attendances.where.not(started_at: nil).count
-#       @superior = User.where(superior: true).where.not(id: @user.id)
-#       # 残業申請のお知らせボタン
-#       @notice_users = User.where(id: Attendance.where.not(schedule: nil).select(:user_id)).where.not(id: current_user)
-#       @notice_users.each do |user|
-#         @attendances_list = Attendance.where.not(schedule: nil).where(overtime_check: false).where(confirmation: current_user.name)
-#         @endtime_notice_sum = @attendances_list.count
-#         @attendances_list.each do |att_notice|
-#           @att_notice = att_notice
-#         end
-#     end
-#       # 所属長承認申請お知らせリスト(上長)
-#     @approval_notice_lists = Approval.where(confirm: "申請中").where(approval_flag: false).where(superior_id: current_user)
-#     @approval_notice_lists.each do |app|
-#       @superior_approval = app
-#     end
-#       # 所属長承認申請合計
-#     @approval_notice_sum = @approval_notice_lists.count
+  def edit_one_month
+  end  
+  
+  def update_one_month
+    # @attendance = Attendance.where(user_id: month_params[:user_id], worked_on: params[:date])
+    # unless month_params[:month_superior].blank?
+    #   @attendance.update_all(month_params)
+    #   flash[:success] = '１ヶ月分の勤怠申請しました。'
+    # else
+    #   flash[:danger] = '申請先を選択してください。'
+    # end
+    # redirect_to @user
+  end
 
-#       # if current_user.superior?
-#       #   @overwork_sum = Attendance.includes(:user).where(superior_confirmation: current_user.id,overwork_status:　"申請中").count
-#       # end
-#     end
-# end  
 
   def new
     @user = User.new
@@ -91,7 +117,7 @@ class UsersController < ApplicationController
       flash[:success] = "ユーザー情報を更新しました。"
       redirect_to @user
     else
-      render :edit      
+      render :edit
     end
   end
 
@@ -126,4 +152,8 @@ class UsersController < ApplicationController
     # def overwork_request_params
     #   params.permit(:tomorrow_check, :next_day, :work_process, :superior)
     # end    
+        
+# def update_one_month_params
+#   params.require(:user).permit(attendances: [:one_month_request_boss, :one_month_request_status])[:attendances]
+# end 
 end
