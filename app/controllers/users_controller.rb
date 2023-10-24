@@ -45,37 +45,37 @@ class UsersController < ApplicationController
       @attendance = Attendance.find(params[:id])
       @worked_sum = @attendances.where.not(designated_work_start_time: nil).count
       @superiors = User.where(superior: true).where.not(id: @user.id)
-      # @approval_count = Attendance.where(superior_id: current_user.id).count
+  
       @notice_users = User.where(id: Attendance.where.not(schedule: nil).select(:user_id)).where.not(id: current_user)
-       @notice_users.each do |user|
-         
+      @notice_users.each do |user|
+        # 何らかの処理
+      end
+  
       @attendances_list = Attendance.where.not(schedule: nil).where(overtime_check: false).where(confirmation: current_user.name)   
       @endtime_notice_sum = @attendances_list.count
       @attendances_list.each do |att_notice|
-      @att_notice = att_notice  
+        @att_notice = att_notice  
+      end
          
       @att_update_list = Attendance.where(attendance_change_check: false).where(attendance_change_flag: true).where(confirmation: current_user.name)   
       @att_update_sum = @att_update_list.count
       @att_update_list.each do |att_up|
         @att_up = att_up
       end
-      
+  
       @attendance = Attendance.find_by(worked_on: @first_day)
-      
       @approval_list = Approval.where(month_at: @first_day).where(user_id: current_user)
       @approval_list.each do |approval|
         @approval = approval
         @approval_superior = User.find_by(id: @approval.superior_id)
       end    
-      
+        
       @approval_notice_lists = Approval.where(confirm: "申請中").where(approval_flag: false).where(superior_id: current_user)
       @approval_notice_lists.each do |app|
         @superior_approval = app
-      end      
-         
+      end
+        
       @approval_notice_sum = @approval_notice_lists.count     
-    end
-    end
     end
   end
   
@@ -157,3 +157,9 @@ class UsersController < ApplicationController
 #   params.require(:user).permit(attendances: [:one_month_request_boss, :one_month_request_status])[:attendances]
 # end 
 end
+
+
+
+
+
+

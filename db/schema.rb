@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20231018170323) do
+ActiveRecord::Schema.define(version: 20231023115626) do
 
   create_table "approvals", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -18,6 +18,8 @@ ActiveRecord::Schema.define(version: 20231018170323) do
     t.string "confirm"
     t.boolean "approval_flag"
     t.integer "superior_id"
+    t.datetime "month_at"
+    t.integer "user_id"
   end
 
   create_table "attendances", force: :cascade do |t|
@@ -32,6 +34,10 @@ ActiveRecord::Schema.define(version: 20231018170323) do
     t.datetime "designated_work_end_time"
     t.datetime "schedule"
     t.boolean "tomorrow_check"
+    t.datetime "overtime_check"
+    t.string "confirmation"
+    t.boolean "attendance_change_check"
+    t.boolean "attendance_change_flag"
     t.index ["user_id"], name: "index_attendances_on_user_id"
   end
 
