@@ -39,44 +39,44 @@ class UsersController < ApplicationController
   # end
   
   def show
-    if current_user.admin?
-      redirect_to root_url
-    else
-      @attendance = Attendance.find(params[:id])
-      @worked_sum = @attendances.where.not(designated_work_start_time: nil).count
-      @superiors = User.where(superior: true).where.not(id: @user.id)
+    # if current_user.admin?
+    #   redirect_to root_url
+    # else
+    #   @attendance = Attendance.find(params[:id])
+      # @worked_sum = @attendances.where.not(designated_work_start_time: nil).count
+      # @superiors = User.where(superior: true).where.not(id: @user.id)
   
-      @notice_users = User.where(id: Attendance.where.not(schedule: nil).select(:user_id)).where.not(id: current_user)
-      @notice_users.each do |user|
-        # 何らかの処理
-      end
+      # @notice_users = User.where(id: Attendance.where.not(schedule: nil).select(:user_id)).where.not(id: current_user)
+      # @notice_users.each do |user|
+      #   # 何らかの処理
+      # end
   
-      @attendances_list = Attendance.where.not(schedule: nil).where(overtime_check: false).where(confirmation: current_user.name)   
-      @endtime_notice_sum = @attendances_list.count
-      @attendances_list.each do |att_notice|
-        @att_notice = att_notice  
-      end
+      # @attendances_list = Attendance.where.not(schedule: nil).where(overtime_check: false).where(confirmation: current_user.name)   
+      # @endtime_notice_sum = @attendances_list.count
+      # @attendances_list.each do |att_notice|
+      #   @att_notice = att_notice  
+      # end
          
-      @att_update_list = Attendance.where(attendance_change_check: false).where(attendance_change_flag: true).where(confirmation: current_user.name)   
-      @att_update_sum = @att_update_list.count
-      @att_update_list.each do |att_up|
-        @att_up = att_up
-      end
+      # @att_update_list = Attendance.where(attendance_change_check: false).where(attendance_change_flag: true).where(confirmation: current_user.name)   
+      # @att_update_sum = @att_update_list.count
+      # @att_update_list.each do |att_up|
+      #   @att_up = att_up
+      # end
   
-      @attendance = Attendance.find_by(worked_on: @first_day)
-      @approval_list = Approval.where(month_at: @first_day).where(user_id: current_user)
-      @approval_list.each do |approval|
-        @approval = approval
-        @approval_superior = User.find_by(id: @approval.superior_id)
-      end    
+      # @attendance = Attendance.find_by(worked_on: @first_day)
+      # @approval_list = Approval.where(month_at: @first_day).where(user_id: current_user)
+      # @approval_list.each do |approval|
+      #   @approval = approval
+      #   @approval_superior = User.find_by(id: @approval.superior_id)
+      # end    
         
-      @approval_notice_lists = Approval.where(confirm: "申請中").where(approval_flag: false).where(superior_id: current_user)
-      @approval_notice_lists.each do |app|
-        @superior_approval = app
-      end
+      # @approval_notice_lists = Approval.where(confirm: "申請中").where(approval_flag: false).where(superior_id: current_user)
+      # @approval_notice_lists.each do |app|
+      #   @superior_approval = app
+      # end
         
-      @approval_notice_sum = @approval_notice_lists.count     
-    end
+      # @approval_notice_sum = @approval_notice_lists.count     
+    # end
   end
   
   def edit_one_month
@@ -142,7 +142,7 @@ class UsersController < ApplicationController
   private
 
     def user_params
-      params.require(:user).permit(:name, :email, :affiliation, :password, :password_confirmation)
+      params.require(:user).permit(:name, :email, :affiliation, :password, :password_confirmation, :designated_work_start_time, :designated_work_end_time)
     end
 
     def basic_info_params

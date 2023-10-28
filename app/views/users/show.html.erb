@@ -8,8 +8,8 @@
           <%= link_to content_tag(:span, "→", class: "arrow-box"), user_path(date: @first_day.next_month) , class: "btn btn-primary" %>
       </td>
       <td>
-      <div class="i">指定勤務開始時間<%= @user.designated_work_start_time %></div>
-      <div class="i">指定勤務終了時間<%= @user.designated_work_start_time %></div>
+      <div class="i">指定勤務開始時間 <%= @user.designated_work_start_time.strftime("%H:%M").gsub(':', '.') if @user.designated_work_start_time.present? %></div>
+      <div class="i">指定勤務終了時間 <%= @user.designated_work_end_time.strftime("%H:%M").gsub(':', '.') if @user.designated_work_end_time.present? %></div>
       </td>  
       <td colspan="3">基本時間：<%= format_basic_info(@user.basic_work_time) %></td>
       <td>初日：<%= l(@first_day, format: :short) %></td>
@@ -19,7 +19,7 @@
       <td>所属：<%= @user.affiliation.present? ? @user.affiliation : "未所属" %></td>
       <td>氏名：<%= @user.name %></td>
       <td>コード</td>
-      <td></td>
+      <td><%= @user.id %></td>
       <td>出勤日数：<%= @worked_sum %>日</td>
       <td>締め：<%= l(@last_day, format: :short) %></td>
     </tr>
@@ -48,151 +48,7 @@
          </div>
         <% end %>
       <% end %>
-          
-<div class="btn-users-show">
-  <%= link_to "勤怠を編集", attendances_edit_one_month_user_path(date: @first_day), class: "btn btn-primary" %>
-  <%= link_to "CSV出力","＃", class: "btn btn-primary" %>
-<div class="item"><%= link_to "勤怠修正ログ（承認済）","＃", class: "btn btn-primary" %></div>  
-</div>
-
-<div>
-  <table class="table table-bordered table-condensed table-hover" id="table-attendances">
-    <thead>  	
-     <tr>
-      <th rowspan="4">残業申請</th>	
-      <th rowspan="4">日付</th>	
-      <th rowspan="4">曜日</th>	
-     <tr>
-      <th colspan="8">【実績】</th>	
-      <th colspan="8">所定外勤務</th>	
-     </tr>     
-      <th colspan="3">出社</th>	
-      <th colspan="3">退社</th>	
-      <th rowspan="2">在社時間</th>	
-      <th rowspan="2">備考</th>	
-      <th colspan="2">終了予定時間</th>	
-      <th rowspan="2">時間外時間</th>	
-      <th rowspan="2">業務処理内容</th>	
-      <th rowspan="2">指示者確認㊞</th>	
-      
-     </tr>	
-     <tr>
-      <td>時</td><td>分</td><td></td>
-      <td>時</td><td>分</td><td></td>
-      <td>時</td><td>分</td>
-     </tr>
-    </thead>
-    
-    <tbody>
-    <% @attendances.each_with_index do |day, index| %>
-      <tr class="<%= index.even? ? 'even-row' : 'odd-row' %>">
-        <td><%= link_to "残業申請",attendances__fotm_overwork_info_user_path, class: "btn btn-primary" %></td>
-        <td><%= l(day.worked_on, format: :short) %></td>
-        <td class="<%= day.worked_on.wday == 6 ? 'saturday' : day.worked_on.wday == 0 ? 'sunday' : 'weekday' %>">
-          <%= $days_of_the_week[day.worked_on.wday] %>
-        </td>
-        <td><%= day.designated_work_start_time.floor_to(15.minutes).strftime("%H") if day.designated_work_start_time.present? %></td>
-        <td><%= day.designated_work_start_time.floor_to(15.minutes).strftime("%M") if day.designated_work_start_time.present? %></td>
-        <td>
-          <% if day.designated_work_start_time.blank? && (btn_text = attendance_state(day)) %>
-            <%= link_to "#{btn_text}登録", user_attendance_path(@user, day), method: :patch, class: "btn btn-primary btn-attendance" %>
-          <% end %>
-        </td>    
-        <td><%= day.designated_work_end_time.floor_to(15.minutes).strftime("%H") if day.designated_work_end_time.present? %></td>
-        <td><%= day.designated_work_end_time.floor_to(15.minutes).strftime("%M") if day.designated_work_end_time.present? %></td>
-        <td>
-        　<% if day.designated_work_start_time.present? && day.designated_work_end_time.blank? && (btn_text = attendance_state(day)) %>
-            <%= link_to "#{btn_text}登録", user_attendance_path(@user, day), method: :patch, class: "btn btn-primary btn-attendance" %>
-          <% end %>
-        </td>
-        <td>
-          <% if day.designated_work_start_time.present? && day.designated_work_end_time.present? %>
-            <% rounded_designated_work_start_time = day.designated_work_start_time.floor_to(15.minutes) %>
-            <% rounded_designated_work_end_time = day.designated_work_end_time.floor_to(15.minutes) %>
-            <%= str_times = working_times(rounded_designated_work_start_time, rounded_designated_work_end_time) %>
-            <% @total_working_times = @total_working_times.to_f + str_times.to_f %>
-          <% end %>
-        </td>        
-        <td><%= day.note %></td>
-        <!-- 終了予定時間（時） -->
-        <td>
-         <% if day.tomorrow_check == true %>
-           <%= day.schedule.tomorrow.strftime("%H") if day.schedule.present? %>
-         <% else %>
-           <%= day.schedule.strftime("%H") if day.schedule.present? %>
-         <% end %>
-        </td>
-        <!-- 終了予定時間（分） -->
-        <td>
-         <% if day.tomorrow_check == true %>
-           <%= day.schedule.floor_to(15.minutes).tomorrow.strftime("%M") if day.schedule.present? %>
-         <% else %>
-           <%= day.schedule.floor_to(15.minutes).strftime("%M") if day.schedule.present? %>
-         <% end %>
-        </td>
-        <td></td>
-        <td></td>
-        <td></td>        
-      </tr>
-      <% end %>
-    </tbody>
-    
-    <tfoot>
-      <!--rowspan:縦結合、colspan：横結合-->
-      <tr>
-        <!--< td colspan="2">< %= sprintf('%.2f', @worked_sum * format_basic_info(@user.basic_work_time).to_f) %></td>-->
-        <td colspan="6"></td>
-        <td><%= format("%.2f", @total_working_times.to_f) %></td>
-        <td colspan="6"></td>
-        <td>
-         <% unless current_user.superior && @user.superior == true %>
-                <%= form_with(model: @approval_list, url: approvals_edit_user_path(@user, @first_day), local: true) do |f| %>
-                  <div class="approval">
-                    <p class="approval-btn">
-                      所属長承認:
-                      <% if @approval_list.present? %>
-                        <% if (@approval.confirm == "承認" || @approval.confirm == "否認") && @approval.approval_flag == false %>
-                          <%= @approval_superior.name %>【<strong><%= @approval.confirm %>済</strong>】
-                        <% elsif (@approval.confirm == "申請中" || @approval.superior_id.present?) && @approval.approval_flag == false %>
-                          <%= @approval_superior.name %>【<strong>申請中</strong>】
-                        <% else %>
-                          <%= "未" %>
-                        <% end %>
-                      <% else %>
-                        <%= "未" %>
-                      <% end %>
-                    </p>
-                  <% if @approval_list.present? %>
-                    <!-- 申請中以外の承認結果 -->
-                    <% unless @approval.confirm == "申請中" %>
-                      <p class="approval-btn"> <%= f.select :confirmation, @superiors.map { |superior| [superior.name, superior.id] }, include_blank: true, class: "select" %></p>
-                      <!-- 次月以降は操作不能 -->
-                      <% if (Date.current.next_month < @last_day) %>
-                        <%= f.submit "申請", disabled: true, class: "btn btn-primary w-50" %>
-                      <% else %>
-                        <%= f.submit "申請", class: "btn btn-primary w-50" %>
-                      <% end %>
-                    <% else %><!-- 承認&否認 -->
-                      <p class="approval-btn"><%= f.select :confirmation, {}, {}, {}, {}, disabled: true, class: "select" %></p>
-                      <%= f.submit "申請", disabled: true, class: "btn btn-primary w-50" %>
-                    <% end %>
-                  <% else %><!-- 申請情報がない場合はここから -->
-                    <p class="approval-btn"><%= f.select :confirmation, @superiors.map { |superior| [superior.name, superior.id] }, include_blank: "指示者選択", class: "select" %></p>                                                                                                                                                                                 
-                    <% if (Date.current.next_month < @last_day) %>
-                      <%= f.submit "申請", disabled: true, class: "btn btn-primary w-50" %>
-                    <% else %>
-                      <%= f.submit "申請", class: "btn btn-primary w-50" %>
-                    <% end %>
-                  <% end %>
-                  </div>
-                <% end %>
-            <% end %>
-          </td>
-        </tr>
-      </tfoot>
     </table>
   </div>
 </div>
-
-
 
