@@ -10,9 +10,11 @@ Rails.application.routes.draw do
   delete '/logout', to: 'sessions#destroy'
   
   resources :bases  
+  # resources :approvals
 
   resources :users do
     collection { post :import }  # こちらが追加されます
+    
 
     member do
       get 'edit_basic_info'
@@ -23,6 +25,7 @@ Rails.application.routes.draw do
       get 'attendances/working'
       get 'attendances/_fotm_overwork_info'
       get 'approvals_edit'
+      post 'approvals_edit'
     end
     
     
