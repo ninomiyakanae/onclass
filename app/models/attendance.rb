@@ -1,5 +1,6 @@
 class Attendance < ApplicationRecord
   belongs_to :user
+  # belongs_to :applied_user, class_name: 'User', foreign_key: 'applied_user_id'
 
   validates :worked_on, presence: true
   validates :note, length: { maximum: 50 }

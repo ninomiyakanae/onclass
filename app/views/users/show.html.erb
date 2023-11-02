@@ -26,30 +26,31 @@
     </tr>
   </table>
 </div>
-     <!--所属長承認申請のお知らせボタン -->
-    <% if logged_in? && current_user.superior? %>
-      <% if current_user.superior? && @user.superior == false  %>
-      <% else %>
-        <div class="superior">
-          <% if @approval_notice_lists.present? %>
-            <% unless @superior_approval.confirm == "承認" || @superior_approval.confirm == "否認" %>
-              <%= link_to "【所属長承認申請のお知らせ】", approvals_edit_user_path(@user), remote: true, :style=>"color:red;", class: "superior_tag" %>
-              <span>
-                <strong>
-                  <%= link_to "#{@approval_count}件の通知があります", approvals_edit_user_path(@user), remote: true, :style=>"color:red;", class: "superior_tag" %>
-                  <!--< %= link_to "#{@approval_notice_sum}件の通知があります", approvals_edit_user_path(@user), remote: true, :style=>"color:red;", class: "superior_tag" %>-->
-                </strong>
-              </span>
-            <% else %>
-              <p class="not_notice">【所属長承認申請のお知らせ】</p>
-            <% end %>
-          <% else %>
-            <p class="not_notice">【所属長承認申請のお知らせ】</p>
-          <% end %>　
-         </div>
-        <% end %>
-      <% end %>
-          
+
+<%= link_to "【所属長承認申請のお知らせ】", approvals_edit_user_path(@user), data: { toggle: "modal", target: "#approvalModal" }, class: "superior_tag" %>
+
+<div class="modal fade" id="approvalModal" tabindex="-1" aria-labelledby="approvalModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="approvalModalLabel">所属長承認申請のお知らせ</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- ここに表示したい内容を記述 -->
+        <span>
+          <strong>
+            <%= link_to "#{@approval_notice_sum}件の通知があります", approvals_edit_user_path(@user), remote: true, style: @text_color, class: "superior_tag" %>
+          </strong>
+        </span>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="btn-users-show">
   <%= link_to "勤怠を編集", attendances_edit_one_month_user_path(date: @first_day), class: "btn btn-primary" %>
   <%= link_to "CSV出力","＃", class: "btn btn-primary" %>
@@ -148,7 +149,8 @@
         <td colspan="6"></td>
         <td>
          <% if current_user.present? %>
-                <%= form_with(model: @approval_list, url: approvals_edit_user_path(@current_user, @first_day), local: true) do |f| %>
+                <!--< %= form_with(model: @approval_list, url: approvals_edit_user_path(@current_user, @first_day), local: true) do |f| %>-->
+                <%= form_with(model: @approval_list, url: approvals_edit_user_path(@user), local: true) do |f| %>
                   <div class="approval">
                     <p class="approval-btn">
                       所属長承認:
@@ -176,7 +178,7 @@
                       <% end %>
                     <% else %><!-- 承認&否認 -->
                       <p class="approval-btn"><%= f.select :confirmation, {}, {}, {}, {}, disabled: true, class: "select" %></p>
-                      <%= f.submit "申請", disabled: true, class: "btn btn-primary w-50" %>
+                      <%= f.submit "申請", id: "approval_notice", disabled: true, class: "btn btn-primary w-50" %>
                     <% end %>
                   <% else %><!-- 申請情報がない場合はここから -->
                     <p class="approval-btn"><%= f.select :confirmation, @superiors.map { |superior| [superior.name, superior.id] }, include_blank: "指示者選択", class: "select" %></p>                                                                                                                                                                                 

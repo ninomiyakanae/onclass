@@ -26,6 +26,8 @@ Rails.application.routes.draw do
       get 'attendances/_fotm_overwork_info'
       get 'approvals_edit'
       post 'approvals_edit'
+      # get 'apply_for_approval'
+      # resources :users, only: [:show, :edit, :update]  # showアクションがcurrent_userのページに該当する場合
     end
     
     

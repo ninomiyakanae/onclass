@@ -1,5 +1,7 @@
 class User < ApplicationRecord
   has_many :attendances, dependent: :destroy
+  # has_many :applied_attendances, class_name: 'Attendance', foreign_key: 'applied_user_id'
+  # accepts_nested_attributes_for :attendances
   # 「remember_token」という仮想の属性を作成します。
   attr_accessor :remember_token
   before_save { self.email = email.downcase }
