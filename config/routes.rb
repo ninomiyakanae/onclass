@@ -21,15 +21,16 @@ Rails.application.routes.draw do
       patch 'update_basic_info'
       get 'edit_notice_info'
       get 'attendances/edit_one_month'
-      patch 'attendances/update_one_month' # この行が追加対象です。
+      # patch 'attendances/update_one_month' # この行が追加対象です。
       get 'attendances/working'
       get 'attendances/_fotm_overwork_info'
       get 'approvals_edit'
       post 'approvals_edit'
+      patch 'users/application_send'      
       # get 'apply_for_approval'
       # resources :users, only: [:show, :edit, :update]  # showアクションがcurrent_userのページに該当する場合
     end
-    
+
     
     
     resources :attendances, only: :update
