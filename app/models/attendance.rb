@@ -4,6 +4,10 @@ class Attendance < ApplicationRecord
 
   validates :worked_on, presence: true
   validates :note, length: { maximum: 50 }
+  # validates :superior_id, presence: { message: '上長を選択してください' }
+  enum confirmation_status: { なし: 0, 申請中: 1, 承認: 2, 否認: 3 }
+  
+
 
   # 出勤時間が存在しない場合、退勤時間は無効
   validate :designated_work_end_time_is_invalid_without_a_designated_work_start_time

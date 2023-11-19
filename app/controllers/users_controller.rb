@@ -8,19 +8,43 @@ class UsersController < ApplicationController
   # before_action :superior_user, only: [:edit_one_month, :update_one_month]
   # before_action :set_approval_list, only: [:update_one_month]
 
+  def update
+    if @user.update_attributes(user_params)
+      flash[:success] = "ユーザー情報を更新しました。"
+      redirect_to @user
+    else
+      render :edit
+    end
+    
+    # @approval = Approval.find(params[:id])
+    # if @approval.update(approval_params)
+    #   # 更新に成功した場合の処理
+    #   flash[:success] =  "申請が更新されました。"
+    #   redirect_to user_path
+    # else
+    #   # エラーがある場合の処理
+    #   render :user_path
+    # end
+  end
+
 
   def application_send
     # ここで@approval_listのインスタンスを設定します。
     @approval_list = Attendance.find(params[:id])
+  #   @approval_list = Approval.find_by(id: params[:id])
+    
+  # # 申請中の件数を計算します。
+  # @approval_notice_lists = Approval.where(confirm: "申請中", approval_flag: false, superior_id: current_user)
+  # @approval_notice_sum = @approval_notice_lists.count    
 
     # 上長が選択されているかをチェックします。
-    if params[:approval][:superior_id].blank?
+    if params[:attendance][:superior_id].blank?
       flash[:danger] = '上長を選択してください。'
       redirect_to user_path # 適切なパスに置き換えてください。
     else
       # 更新処理を行う
       if @approval_list.update(approval_params)
-        flash[:success] = '申請が更新されました。'
+        flash[:success] =  "申請が更新されました。"
         redirect_to user_path(current_user, @approval_list) # 成功時のリダイレクト先は適宜設定してください。
       else
         render :user_path# エラーがある場合は編集ページを再表示
@@ -28,47 +52,24 @@ class UsersController < ApplicationController
     end
   end
   
-  
-  def show
-    if current_user.admin?
-      redirect_to root_url
-    else
-      @attendance = Attendance.find(params[:id])
-      @worked_sum = @attendances.where.not(designated_work_start_time: nil).count
-      @superiors = User.where(superior: true).where.not(id: @user.id)
-  
-      @notice_users = User.where(id: Attendance.where.not(schedule: nil).select(:user_id)).where.not(id: current_user)
-      @notice_users.each do |user|
-        # 何らかの処理
-      end
-  
-      @attendances_list = Attendance.where.not(schedule: nil).where(overtime_check: false).where(confirmation: current_user.name)   
-      @endtime_notice_sum = @attendances_list.count
-      @attendances_list.each do |att_notice|
-        @att_notice = att_notice  
-      end
-         
-      @att_update_list = Attendance.where(attendance_change_check: false).where(attendance_change_flag: true).where(confirmation: current_user.name)   
-      @att_update_sum = @att_update_list.count
-      @att_update_list.each do |att_up|
-        @att_up = att_up
-      end
-  
-      @attendance = Attendance.find_by(worked_on: @first_day)
-      @approval_list = Approval.where(month_at: @first_day).where(user_id: current_user)
-      @approval_list.each do |approval|
-        @approval = approval
-        @approval_superior = User.find_by(id: @approval.superior_id)
-      end    
-        
-      @approval_notice_lists = Approval.where(confirm: "申請中").where(approval_flag: false).where(superior_id: current_user)
-      @approval_notice_lists.each do |app|
-        @superior_approval = app
-      end
-      @approval_notice_sum = @approval_notice_lists.count   
-    end    
-  end       
-  
+  # def application_send
+  #   # @approval_listを適切に初期化する
+  #   @approval_list = Approval.find_by(id: params[:id]) # または別の適切な検索条件を使用
+
+  #   if @approval_list.nil?
+  #     # @approval_listがnilの場合、エラーメッセージを表示するなどの処理
+  #     flash[:error] = "承認申請が見つかりません。"
+  #     redirect_to user_path # 適切なパスにリダイレクト
+  #   else
+  #     # 以下のコードはそのまま
+  #     if @approval_list.update(approval_params)
+  #       flash[:success] = "申請が更新されました。"
+  #       redirect_to user_path(current_user, @approval_list)
+  #     else
+  #       # 更新に失敗した場合の処理
+  #     end
+  #   end
+  # end 
   
   def index
     @users = User.paginate(page: params[:page], per_page: 10)
@@ -99,9 +100,104 @@ class UsersController < ApplicationController
   # def show
   #   @worked_sum = @attendances.where.not(designated_work_start_time: nil).count
   # end
+    
+ 
   
+  def show
+    if current_user.admin?
+      redirect_to root_url
+    else
+      @attendance = Attendance.find(params[:id])
+      @worked_sum = @attendances.where.not(designated_work_start_time: nil).count
+      @superiors = User.where(superior: true).where.not(id: @user.id)
+  
+      @notice_users = User.where(id: Attendance.where.not(schedule: nil).select(:user_id)).where.not(id: current_user)
+      @notice_users.each do |user|
+        # 何らかの処理
+      end
+  
+      @attendances_list = Attendance.where.not(schedule: nil).where(overtime_check: false).where(confirmation: current_user.name)   
+      @endtime_notice_sum = @attendances_list.count
+      @attendances_list.each do |att_notice|
+        @att_notice = att_notice  
+      end
+         
+      @att_update_list = Attendance.where(attendance_change_check: false).where(attendance_change_flag: true).where(confirmation: current_user.name)   
+      @att_update_sum = @att_update_list.count
+      @att_update_list.each do |att_up|
+        @att_up = att_up
+      end
+  
+      @attendance = Attendance.find_by(worked_on: @first_day)
+      @approval_list = Attendance.where(month: @first_day).where(user_id: current_user)
+      @approval_list.each do |approval|
+        @approval = approval
+        @approval_superior = User.find_by(id: @approval.superior_id)
+      end    
+  
+      @approval_notice_lists = Attendance.where(confirmation_status: "申請中").where(confirmation_status: false).where(superior_id: current_user)
+      @approval_notice_lists.each do |app|
+        @superior_approval = app
+      end
+      @approval_notice_sum = @approval_notice_lists.count   
+      # @approval_notice_sum = Approval.includes(:user).where(superior_month_notice_confirmation: current_user.id, confirmation_status: "申請中").count
+    end        
+    # @approval_notice_sum = Approval.includes(:user).where(superior_month_notice_confirmation: current_user.id, confirmation_status: "申請中").count    
+    #   end
+    #   @approval_notice_lists = Approval.where(confirmation_status: 1).where(confirmation_status: false).where(superior_id: current_user)
+    #   @approval_notice_lists.each do |app|
+    #     @superior_approval = app
+    #   end
+    #   @approval_notice_sum = @approval_notice_lists.count   
+    # end    
+  end       
+  
+
+
+
       
   def approvals_edit
+    # @month_attendances = Attendance.where(superior_month_notice_confirmation: @user.id, confirmation_status: "申請中").order(:user_id, :worked_on).group_by(&:user_id) 
+      respond_to do |format|
+    format.js # approvals_edit.js.erb を呼び出す
+  end
+    # @users = User.find(params[:id])
+    # @users = User.find(params[:id])
+    # if @approval.update(approval_params)
+    #   if @approval.status_applying
+    #     # "申請中" の件数をカウント
+    #     @pending_approvals_count = Approval.where(confirmation_status: 1).count
+    #     # 件数をフラッシュメッセージに設定
+    #     flash[:notice] = "申請中の件数: #{@pending_approvals_count}"
+    #   end
+    #   redirect_to user_path # 成功時のリダイレクト先
+    # else
+    #   render :edit # 失敗時の処理
+    # end
+    # @attendance = Attendance.find(params[:id])
+    # status = params[:attendance][:monthly_confirmation_status].to_i
+
+    # case status
+    # when 1 # 申請中
+    #   # 上司に申請して、まだ承認または非承認されていない状態を処理
+    #   @attendance.update(monthly_confirmation_status: "申請中")
+    #   flash[:info] = "上司に申請が送信されました。"
+    # when 2 # 承認
+    #   # 上司が申請を承認した場合の処理
+    #   @attendance.update(monthly_confirmation_status: "承認")
+    #   flash[:success] = "申請が承認されました。"
+    # when 3 # 非承認
+    #   # 上司が申請を否認した場合の処理
+    #   @attendance.update(monthly_confirmation_status: "非認")
+    #   flash[:danger] = "申請が非承認されました。"
+    # else
+    #   # それ以外の処理（例えば、申請なしの場合）
+    #   flash[:warning] = "申請のステータスが正しくありません。"
+    # end
+
+    # redirect_to attendances_path # 適切なリダイレクト先に変更してください
+  end
+
 #     @attendances = Attendance.where(user_id: current_user.id)
   
 #     # @userを定義します。ここでは現在のユーザーを指定しています。
@@ -149,7 +245,7 @@ class UsersController < ApplicationController
 #     # params[:user]またはparams[:user][:month_approval]が存在しない場合の処理
 #     # 必要に応じて、ここにエラーメッセージの表示やその他の処理を追加できます。
 #   end
-  end
+  # end
   
   
   
@@ -356,14 +452,24 @@ class UsersController < ApplicationController
   end
 
 
-  def update
-    if @user.update_attributes(user_params)
-      flash[:success] = "ユーザー情報を更新しました。"
-      redirect_to @user
-    else
-      render :edit
-    end
-  end
+  # def update
+  #   if @user.update_attributes(user_params)
+  #     flash[:success] = "ユーザー情報を更新しました。"
+  #     redirect_to @user
+  #   else
+  #     render :edit
+  #   end
+    
+  #   @approval = Approval.find(params[:id])
+  #   if @approval.update(approval_params)
+  #     # 更新に成功した場合の処理
+  #     flash[:success] =  "申請が更新されました。"
+  #     redirect_to user_path
+  #   else
+  #     # エラーがある場合の処理
+  #     render :user_path
+  #   end
+  # end
 
   def destroy
     @user.destroy
@@ -393,10 +499,12 @@ class UsersController < ApplicationController
 #   # def set_approval_list
 #   #   @approval_list = Approval.find(params[:id]) # ここでIDをもとにApprovalオブジェクトを取得します。
 #   # end
-
   def approval_params
-    params.require(:approval).permit(:superior_id, :confirm) 
+    params.require(:attendance).permit(:confirmation_status)
   end
+  # def approval_params
+  #   params.require(:approval).permit(:superior_id, :confirm) 
+  # end
 # # ストロングパラメータ
 #   def attendance_params
 #     params.require(:attendance).permit(:confirmation, :start_time, :end_time, :note)
@@ -424,8 +532,7 @@ class UsersController < ApplicationController
 #         # attendanceテーブルの（承認月,指示者確認、どの上長か）
 #     params.require(:user).permit(:month_approval, :indicater_reply_month, :indicater_check_month)
 #   end    
-end
-    
+
     # def overwork_request_params
     #   params.permit(:tomorrow_check, :next_day, :work_process, :superior)
     # end    
@@ -445,6 +552,7 @@ end
 # end 
 
 
+end
 
 
 
