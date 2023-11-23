@@ -158,9 +158,7 @@ class UsersController < ApplicationController
       
   def approvals_edit
     # @month_attendances = Attendance.where(superior_month_notice_confirmation: @user.id, confirmation_status: "申請中").order(:user_id, :worked_on).group_by(&:user_id) 
-      respond_to do |format|
-    format.js # approvals_edit.js.erb を呼び出す
-  end
+
     # @users = User.find(params[:id])
     # @users = User.find(params[:id])
     # if @approval.update(approval_params)

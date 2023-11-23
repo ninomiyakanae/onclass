@@ -29,14 +29,13 @@
 
 <div>
   <% if @approval_notice_sum > 0 %>
-    <%= link_to "【所属長承認申請のお知らせ】", users_application_send_user_path(@user), remote: true, class: "notice-superior" %>
+    <%= link_to "【所属長承認申請のお知らせ】", approvals_edit_user_path(@user), remote: true, class: "notice-superior" %>
     <span class="notice-border-superior"><%= "#@approval_notice_sum}件の通知があります" %></span>
   <% else %>
-  <%= link_to "【所属長承認申請のお知らせ】", users_application_send_user_path(@user), remote: true, class: "notice-superior" %>
+    <%= link_to "【所属長承認申請のお知らせ】", approvals_edit_user_path(@user), remote: true, class: "notice-superior", data: {toggle: "modal"} %>
     <!--<p class="not_notice">【所属長承認申請のお知らせ】</p>-->
   <% end %>
 </div>
-
 
 
 
@@ -161,3 +160,6 @@
 
 <!--モーダルウインドウ表示-->
 <div id="approvals_edit" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
+<!--< div id="user-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>-->
+
+

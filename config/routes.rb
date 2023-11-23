@@ -24,8 +24,8 @@ Rails.application.routes.draw do
       # patch 'attendances/update_one_month' # この行が追加対象です。
       get 'attendances/working'
       get 'attendances/_fotm_overwork_info'
-      get '_approvals_edit'
-      post 'approvals_edit'
+      # get '_approvals_edit'
+      get 'approvals_edit'
       patch 'users/application_send'      
       get '/users/:id/edit_basic_info', to: 'users#edit_basic_info'
       # get 'apply_for_approval'
