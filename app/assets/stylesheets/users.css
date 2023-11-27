@@ -1,0 +1,101 @@
+@charset "UTF-8";
+/* ユーザー情報テーブル */
+.user-table {
+  vertical-align: middle;
+  text-align: center; }
+
+/* ユーザー情報下ボタン */
+.btn-users-show {
+  margin-top: -10px;
+  margin-bottom: 10px; }
+
+/* ユーザー勤怠情報テーブル */
+#table-attendances th {
+  vertical-align: middle;
+  text-align: center; }
+#table-attendances td {
+  vertical-align: middle;
+  text-align: center; }
+
+/* 入力フォーム */
+.label-signup {
+  margin-top: 5px; }
+
+.btn-signup {
+  margin-top: 10px; }
+
+.label-user--edit {
+  margin-top: 5px; }
+
+.btn-user--edit {
+  margin-top: 10px; }
+
+/* ユーザー一覧ページ */
+#table-users td {
+  vertical-align: middle; }
+
+/* 基本情報編集モーダルウインドウ */
+.label-basic-info {
+  margin-top: 5px; }
+
+.btn-basic-info {
+  margin: 15px 0;
+  width: 30%; }
+
+.arrow-box {
+  padding: 3px;
+  /* 内側の余白設定 */
+  display: inline-block;
+  /* インライン要素として配置 */
+  border-radius: 10px;
+  /* 角を丸くする設定 */
+  width: 20px;
+  /* 枠の横幅を指定 */ }
+
+.custom-button {
+  border: 2px solid gray;
+  /* 枠を灰色に */
+  background-color: #f2f2f2;
+  /* 背景を薄い灰色に */
+  color: black;
+  /* 文字を黒に */ }
+
+.even-row {
+  background-color: rgba(128, 128, 128, 0.1);
+  /* 更に薄いグレーに設定 */ }
+
+.odd-row {
+  background-color: white; }
+
+.saturday {
+  color: blue; }
+
+.sunday {
+  color: red; }
+
+.weekday {
+  color: black; }
+
+.move-to-right {
+  margin-left: auto;
+  margin-right: 0px; }
+
+.spacing {
+  margin-top: 20px; }
+
+.btn-users-show {
+  margin-top: 20px;
+  /* 例として20pxを使用していますが、必要な大きさに調整してください */ }
+
+/* 基本情報編集モーダルウインドウ */
+.frame {
+  border: 3px black solid;
+  border-collapse: collapse; }
+
+th, td {
+  border: 1px black solid; }
+
+.row {
+  text-align: center; }
+
+/*# sourceMappingURL=users.css.map */

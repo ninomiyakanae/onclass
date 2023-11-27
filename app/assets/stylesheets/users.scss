@@ -123,3 +123,19 @@
 //   margin: 15px 0;
 //   width: 30%;
 // }
+
+// モーダルウィンドウ内の枠線、罫線
+
+.frame {
+  border:1px black solid;
+  border-collapse: collapse; 
+  margin: auto;
+  }
+  th,td {
+    border:1px black solid;
+    
+}
+
+.row{
+  vertical-align:middle
+}
