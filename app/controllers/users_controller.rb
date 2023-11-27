@@ -8,6 +8,8 @@ class UsersController < ApplicationController
   # before_action :superior_user, only: [:edit_one_month, :update_one_month]
   # before_action :set_approval_list, only: [:update_one_month]
 
+
+  
   def update
     if @user.update_attributes(user_params)
       flash[:success] = "ユーザー情報を更新しました。"
@@ -487,6 +489,7 @@ class UsersController < ApplicationController
     redirect_to users_url
   end
   
+
   private  
   
   
