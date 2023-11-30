@@ -104,8 +104,14 @@ p {
 }
 
 
-// /* モーダルウインドウの位置調整 */
+.frame {
+  // border:1px black solid;
+  // border-collapse: collapse; 
+  // margin: auto;
+  // vertical-align:middle
+  }
+  th {
+    text-align: center;
+    // border:1px black solid;
 
-// .modal-dialog-center {
-//   padding-top: 10%;
-// }
+}
