@@ -33,8 +33,8 @@
     <%= link_to "【所属長承認申請のお知らせ】", approvals_edit_user_path(@user), remote: true, class: "notice-superior" %>
     <span class="notice-border-superior"><%= "#@approval_notice_sum}件の通知があります" %></span>
   <% else %>
-    <%= link_to "【所属長承認申請のお知らせ】", approvals_edit_user_path(@user), remote: true, class: "notice-superior" %>
-    <!--<p class="not_notice">【所属長承認申請のお知らせ】</p>-->
+    <!--< %= link_to "【所属長承認申請のお知らせ】", approvals_edit_user_path(@user), remote: true, class: "notice-superior" %>-->
+    <p class="not_notice">【所属長承認申請のお知らせ】</p>
   <% end %>
 </div>
 
