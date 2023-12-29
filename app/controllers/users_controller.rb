@@ -17,17 +17,17 @@ class UsersController < ApplicationController
   end
 
 
+
+
+
+
+
   def application_send
     # ここで@approval_listのインスタンスを設定します。
     @approval_list = Attendance.find(params[:id])
 
-  #   @approval_list = Approval.find_by(id: params[:id])
-    
-  # # 申請中の件数を計算します。
-  # @approval_notice_lists = Approval.where(confirm: "申請中", approval_flag: false, superior_id: current_user)
-  # @approval_notice_sum = @approval_notice_lists.count    
-
-    上長が選択されているかをチェックします。
+ 
+    # 上長が選択されているかをチェックします。
     if params[:attendance][:superior_id].blank?
       flash[:danger] = '上長を選択してください。'
       redirect_to user_path # 適切なパスに置き換えてください。
@@ -42,37 +42,10 @@ class UsersController < ApplicationController
     end
   end
   
-  # def application_send
-  #   # @approval_listを適切に初期化する
-  #   @approval_list = Approval.find_by(id: params[:id]) # または別の適切な検索条件を使用
-
-  #   if @approval_list.nil?
-  #     # @approval_listがnilの場合、エラーメッセージを表示するなどの処理
-  #     flash[:error] = "承認申請が見つかりません。"
-  #     redirect_to user_path # 適切なパスにリダイレクト
-  #   else
-  #     # 以下のコードはそのまま
-  #     if @approval_list.update(approval_params)
-  #       flash[:success] = "申請が更新されました。"
-  #       redirect_to user_path(current_user, @approval_list)
-  #     else
-  #       # 更新に失敗した場合の処理
-  #     end
-  #   end
-  # end 
   
   def index
     @users = User.paginate(page: params[:page], per_page: 10)
-    # respond_to do |format|
-    #   format.html # HTML形式のレスポンスを処理
-    #   format.csv { send_data @users.to_csv, filename: "users-#{Date.today}.csv" } # CSV形式のレスポンスを処理
   end
-    # @user = current_user # これがログイン中のユーザーを取得するメソッドであれば
-
-  # def index
-  #   @users = User.where.not(id: 1).paginate(page: params[:page]).search(params[:search])
-  #   # @users = User.all
-  # end
 
   
   def import
@@ -121,20 +94,25 @@ class UsersController < ApplicationController
         @approval_superior = User.find_by(id: @approval.superior_id)
       end    
   
-      @approval_notice_lists = Attendance.where(confirmation_status: "申請中").where(superior_id: current_user)
-      @approval_notice_lists.each do |app|
+      # # # 現在のユーザーの新しい勤怠申請を作成
+      if params[:attendance]
+        @attendance = current_user.attendances.build(attendance_params)
+        if @attendance.save
+          flash[:success] = '新規作成に成功しました。'
+        else
+          render 'show'
+        end
       end
-      @approval_notice_sum = @approval_notice_lists.count   
+      
+  # 1ヶ月の勤怠申請の合計数をカウント
+      @one_month_approval_sum = Attendance.where(superior_id: superior_id, 
+                                                 worked_on: worked_on, 
+                                                 approval_notice_sum: '申請中').count
     end        
   end       
   
-
-
-
-      
+   
   def approvals_edit
-
-
   end
 
 
@@ -207,7 +185,11 @@ class UsersController < ApplicationController
     params.require(:user).permit(:name, :email, :affiliation, :employee_number, :uid, :password, :basic_work_time, :designated_work_start_time, :designated_work_end_time)
   end
 
-
+  # フォームから送信されるパラメータの安全な処理
+  def attendance_params
+    # 必要なパラメータを許可
+    params.require(:attendance).permit(:superior_id, :worked_on, :confirmation_status)
+  end
 end
 
 

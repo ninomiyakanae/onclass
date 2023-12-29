@@ -14,7 +14,7 @@ Rails.application.routes.draw do
 
   resources :users do
     collection { post :import }  # こちらが追加されます
-    
+
 
     member do
       get 'edit_basic_info'
@@ -26,7 +26,8 @@ Rails.application.routes.draw do
       get 'attendances/_fotm_overwork_info'
       # get '_approvals_edit'
       get 'approvals_edit'
-      patch 'users/application_send'      
+      patch 'users/application_send'    
+      put 'users/create_send'    
       get '/users/:id/edit_basic_info', to: 'users#edit_basic_info'
       # get 'apply_for_approval'
       # resources :users, only: [:show, :edit, :update]  # showアクションがcurrent_userのページに該当する場合
