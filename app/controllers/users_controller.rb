@@ -104,10 +104,13 @@ class UsersController < ApplicationController
         end
       end
       
+      superior_id = @attendance.superior_id
+      worked_on = @attendance.worked_on
+      
   # 1ヶ月の勤怠申請の合計数をカウント
       @one_month_approval_sum = Attendance.where(superior_id: superior_id, 
                                                  worked_on: worked_on, 
-                                                 approval_notice_sum: '申請中').count
+                                                 confirmation_status: '申請中').count
     end        
   end       
   
