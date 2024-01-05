@@ -103,7 +103,7 @@ class UsersController < ApplicationController
           render 'show'
         end
       end
-      
+      # v
       superior_id = @attendance.superior_id
       worked_on = @attendance.worked_on
       
