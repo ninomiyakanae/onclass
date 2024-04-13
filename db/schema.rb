@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20231201102946) do
+ActiveRecord::Schema.define(version: 20240411152237) do
 
   create_table "approvals", force: :cascade do |t|
   end
@@ -32,6 +32,7 @@ ActiveRecord::Schema.define(version: 20231201102946) do
     t.integer "superior_month_notice_confirmation"
     t.integer "confirmation_status", default: 0
     t.boolean "check_box", default: false
+    t.date "month_first_day"
     t.index ["user_id"], name: "index_attendances_on_user_id"
   end
 

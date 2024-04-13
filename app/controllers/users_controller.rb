@@ -94,7 +94,7 @@ class UsersController < ApplicationController
         @approval_superior = User.find_by(id: @approval.superior_id)
       end    
   
-      # # # 現在のユーザーの新しい勤怠申請を作成
+      # # 現在のユーザーの新しい勤怠申請を作成
       if params[:attendance]
         @attendance = current_user.attendances.build(attendance_params)
         if @attendance.save
@@ -103,17 +103,15 @@ class UsersController < ApplicationController
           render 'show'
         end
       end
-      # v
-      superior_id = @attendance.superior_id
-      worked_on = @attendance.worked_on
       
-  # 1ヶ月の勤怠申請の合計数をカウント
-      @one_month_approval_sum = Attendance.where(superior_id: superior_id, 
-                                                 worked_on: worked_on, 
-                                                 confirmation_status: '申請中').count
-    end        
-  end       
-  
+      @applying_month = Attendance.find_by(user_id: @user.id, month_first_day: @first_day)
+      if @applying_month.month_request_status != 'なし' || @applying_month.month_check_confirm == true
+        @applying_month_superior = User.find_by(id: @applying_month.month_request_superior)
+      end　　　
+      @applying_month_count = Attendance.where(month_request_superior: @user.id, month_request_status: '申請中').count    
+      end
+    end       
+  end    
    
   def approvals_edit
   end
