@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20240411152237) do
+ActiveRecord::Schema.define(version: 20240417124026) do
 
   create_table "approvals", force: :cascade do |t|
   end
@@ -19,7 +19,6 @@ ActiveRecord::Schema.define(version: 20240411152237) do
     t.date "worked_on"
     t.string "note"
     t.integer "user_id"
-    t.datetime "designated_work_end_time"
     t.datetime "schedule"
     t.boolean "tomorrow_check"
     t.datetime "overtime_check"
@@ -28,11 +27,12 @@ ActiveRecord::Schema.define(version: 20240411152237) do
     t.boolean "attendance_change_flag"
     t.integer "month"
     t.integer "superior_id"
-    t.datetime "designated_work_start_time"
     t.integer "superior_month_notice_confirmation"
     t.integer "confirmation_status", default: 0
     t.boolean "check_box", default: false
     t.date "month_first_day"
+    t.string "month_request_status", default: "なし"
+    t.index ["month_first_day", "user_id"], name: "index_attendances_on_month_first_day_and_user_id", unique: true
     t.index ["user_id"], name: "index_attendances_on_user_id"
   end
 
@@ -50,12 +50,14 @@ ActiveRecord::Schema.define(version: 20240411152237) do
     t.string "password_digest"
     t.string "remember_digest"
     t.boolean "admin", default: false
-    t.datetime "work_time", default: "2023-10-14 22:30:00"
+    t.datetime "work_time", default: "2024-04-13 22:30:00"
     t.string "employee_number"
     t.string "uid"
     t.boolean "superior"
     t.string "affiliation"
     t.time "basic_work_time", default: "2000-01-01 23:00:00"
+    t.time "designated_work_end_time"
+    t.time "designated_work_start_time"
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
