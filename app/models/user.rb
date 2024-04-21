@@ -17,8 +17,8 @@ class User < ApplicationRecord
   # validates :employee_number, presence: true, allow_blank: true
   validates :basic_work_time, presence: true
   validates :work_time, presence: true
-  validates :designated_work_start_time, presence: true
-  validates :designated_work_end_time, presence: true
+  # validates :designated_work_start_time
+  # validates :designated_work_end_time
   has_secure_password
   validates :password, presence: true, length: { minimum: 6 }, allow_nil: true
 

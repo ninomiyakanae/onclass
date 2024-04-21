@@ -136,12 +136,14 @@ class UsersController < ApplicationController
       render :new
     end
     
-    @attendance = Attendance.new(attendance_params)
-    if @attendance.save
-      # 申請処理など
-      redirect_to attendances_path, notice: '申請が完了しました。'
-    else
-      render :new
+    # attendance パラメータの存在をチェック
+    if params[:attendance].present?
+      @attendance = Attendance.new(attendance_params)
+      if @attendance.save
+        redirect_to attendances_path, notice: '申請が完了しました。'
+      else
+        render :new
+      end
     end
   end
 
