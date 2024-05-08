@@ -32,6 +32,8 @@ ActiveRecord::Schema.define(version: 20240417124026) do
     t.boolean "check_box", default: false
     t.date "month_first_day"
     t.string "month_request_status", default: "なし"
+    t.datetime "started_at"
+    t.datetime "finished_at"
     t.index ["month_first_day", "user_id"], name: "index_attendances_on_month_first_day_and_user_id", unique: true
     t.index ["user_id"], name: "index_attendances_on_user_id"
   end
