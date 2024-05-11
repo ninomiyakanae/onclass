@@ -67,7 +67,8 @@ class UsersController < ApplicationController
       redirect_to root_url
     else
       @attendance = Attendance.find(params[:id])
-      @worked_sum = @attendances.where.not(designated_work_start_time: nil).count
+      @users = User.all
+      @worked_sum = @users.where.not(designated_work_start_time: nil).count
       @superiors = User.where(superior: true).where.not(id: @user.id)
   
       @notice_users = User.where(id: Attendance.where.not(schedule: nil).select(:user_id)).where.not(id: current_user)
