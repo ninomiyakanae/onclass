@@ -9,8 +9,8 @@
           <%= link_to content_tag(:span, "→", class: "arrow-box"), user_path(date: @first_day.next_month) , class: "btn btn-primary" %>
       </td>
       <td>
-      <div class="i">指定勤務開始時間 <%= @attendance.designated_work_start_time.strftime("%H:%M").gsub(':', '.') if @attendance.designated_work_start_time.present? %></div>
-      <div class="i">指定勤務終了時間 <%= @attendance.designated_work_end_time.strftime("%H:%M").gsub(':', '.') if @attendance.designated_work_end_time.present? %></div>
+      <div class="i">指定勤務開始時間 <%= @user.designated_work_start_time.strftime("%H:%M").gsub(':', '.') if @user.designated_work_start_time.present? %></div>
+      <div class="i">指定勤務終了時間 <%= @user.designated_work_end_time.strftime("%H:%M").gsub(':', '.') if @user.designated_work_end_time.present? %></div>
       </td>  
       <td colspan="3">基本時間：<%= format_basic_info(@user.basic_work_time) %></td>
       <td>初日：<%= l(@first_day, format: :short) %></td>
@@ -76,32 +76,30 @@
     </thead>
 
    <tbody>
-    <% @attendances.each_with_index do |day, index| %>
-      <tr class="<%= index.even? ? 'even-row' : 'odd-row' %>">
-        <td><%= link_to "残業申請",attendances__fotm_overwork_info_user_path, class: "btn btn-primary" %></td>
+    <% @attendances.each do |day| %>        <td><%= link_to "残業申請",attendances__fotm_overwork_info_user_path, class: "btn btn-primary" %></td>
         <td><%= l(day.worked_on, format: :short) %></td>
         <td class="<%= day.worked_on.wday == 6 ? 'saturday' : day.worked_on.wday == 0 ? 'sunday' : 'weekday' %>">
           <%= $days_of_the_week[day.worked_on.wday] %>
         </td>
-        <td><%= day.designated_work_start_time.floor_to(15.minutes).strftime("%H") if day.designated_work_start_time.present? %></td>
-        <td><%= day.designated_work_start_time.floor_to(15.minutes).strftime("%M") if day.designated_work_start_time.present? %></td>
+        <td><%= day.started_at.floor_to(15.minutes).strftime("%H") if day.started_at.present? %></td>
+        <td><%= day.started_at.floor_to(15.minutes).strftime("%M") if day.started_at.present? %></td>
         <td>
-          <% if day.designated_work_start_time.blank? && (btn_text = attendance_state(day)) %>
+          <% if day.started_at.blank? && (btn_text = attendance_state(day)) %>
             <%= link_to "#{btn_text}登録", user_attendance_path(@user, day), method: :patch, class: "btn btn-primary btn-attendance" %>
           <% end %>
         </td>    
-        <td><%= day.designated_work_end_time.floor_to(15.minutes).strftime("%H") if day.designated_work_end_time.present? %></td>
-        <td><%= day.designated_work_end_time.floor_to(15.minutes).strftime("%M") if day.designated_work_end_time.present? %></td>
+        <td><%= day.finished_at.floor_to(15.minutes).strftime("%H") if day.finished_at.present? %></td>
+        <td><%= day.finished_at.floor_to(15.minutes).strftime("%M") if day.finished_at.present? %></td>
         <td>
-        　<% if day.designated_work_start_time.present? && day.designated_work_end_time.blank? && (btn_text = attendance_state(day)) %>
+        　<% if day.started_at.present? && day.finished_at.blank? && (btn_text = attendance_state(day)) %>
             <%= link_to "#{btn_text}登録", user_attendance_path(@user, day), method: :patch, class: "btn btn-primary btn-attendance" %>
           <% end %>
         </td>
         <td>
-          <% if day.designated_work_start_time.present? && day.designated_work_end_time.present? %>
-            <% rounded_designated_work_start_time = day.designated_work_start_time.floor_to(15.minutes) %>
-            <% rounded_designated_work_end_time = day.designated_work_end_time.floor_to(15.minutes) %>
-            <%= str_times = working_times(rounded_designated_work_start_time, rounded_designated_work_end_time) %>
+          <% if day.started_at.present? && day.finished_at.present? %>
+            <% rounded_started_at = day.started_at.floor_to(15.minutes) %>
+            <% rounded_finished_at = day.finished_at.floor_to(15.minutes) %>
+            <%= str_times = working_times(rounded_started_at, rounded_finished_at) %>
             <% @total_working_times = @total_working_times.to_f + str_times.to_f %>
           <% end %>
         </td>        

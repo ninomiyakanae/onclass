@@ -3,8 +3,8 @@ module AttendancesHelper
   def attendance_state(attendance)
     # 受け取ったAttendanceオブジェクトが当日と一致するか評価します。
     if Date.current == attendance.worked_on
-      return '出勤' if attendance.designated_work_start_time.nil?
-      return '退勤' if attendance.designated_work_start_time.present? && attendance.designated_work_end_time.nil?
+      return '出勤' if attendance.started_at.nil?
+      return '退勤' if attendance.started_at.present? && attendance.finised_at.nil?
     end
     # どれにも当てはまらなかった場合はfalseを返します。
     return false

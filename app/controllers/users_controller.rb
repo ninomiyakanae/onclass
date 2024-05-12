@@ -106,10 +106,14 @@ class UsersController < ApplicationController
       end
       
       @applying_month = Attendance.find_by(user_id: @user.id, month_first_day: @first_day)
-      if @applying_month.month_request_status != 'なし' || @applying_month.month_check_confirm == true
-        @applying_month_superior = User.find_by(id: @applying_month.month_request_superior)
-      end　　　
-      @applying_month_count = Attendance.where(month_request_superior: @user.id, month_request_status: '申請中').count    
+      if @applying_month
+        if @applying_month.month_request_status != 'なし' || @applying_month.month_check_confirm == true
+          @applying_month_superior = User.find_by(id: @applying_month.month_request_superior)
+        end
+      else
+        # @applying_monthが存在しない場合の処理をここに記述
+        # 例えば、エラーメッセージを設定する、あるいは何もしない等
+        flash[:alert] = '適用月のデータが存在しません。'
       end
     end       
   end    
