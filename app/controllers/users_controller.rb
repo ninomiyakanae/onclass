@@ -63,14 +63,16 @@ class UsersController < ApplicationController
 
   
   def show
+    @user = User.find(params[:id]) 
+    
     if current_user.admin?
       redirect_to root_url
     else
       @attendance = Attendance.find(params[:id])
       @users = User.all
-      @worked_sum = @users.where.not(designated_work_start_time: nil).count
+      @worked_sum = @attendances.where.not(started_at: nil).count
       @superiors = User.where(superior: true).where.not(id: @user.id)
-  
+
       @notice_users = User.where(id: Attendance.where.not(schedule: nil).select(:user_id)).where.not(id: current_user)
       @notice_users.each do |user|
         # 何らかの処理

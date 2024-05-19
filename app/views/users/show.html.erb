@@ -9,8 +9,8 @@
           <%= link_to content_tag(:span, "→", class: "arrow-box"), user_path(date: @first_day.next_month) , class: "btn btn-primary" %>
       </td>
       <td>
-      <div class="i">指定勤務開始時間 <%= @user.designated_work_start_time.strftime("%H:%M").gsub(':', '.') if @user.designated_work_start_time.present? %></div>
-      <div class="i">指定勤務終了時間 <%= @user.designated_work_end_time.strftime("%H:%M").gsub(':', '.') if @user.designated_work_end_time.present? %></div>
+      <div class="i">指定勤務開始時間 <%= @attendance.started_at.strftime("%H:%M").gsub(':', '.') if @attendance.started_at.present? %></div>
+      <div class="i">指定勤務終了時間 <%= @attendance.finished_at.strftime("%H:%M").gsub(':', '.') if @attendance.finished_at.present? %></div>
       </td>  
       <td colspan="3">基本時間：<%= format_basic_info(@user.basic_work_time) %></td>
       <td>初日：<%= l(@first_day, format: :short) %></td>
@@ -30,7 +30,7 @@
 <% if @user.superior == true %>
   <div class="various-notices">
   <div class="various-notice">
-    <%= link_to "【所属長承認申請のお知らせ】", edit_user_monthapply_path(@user, @applying_month, date: @first_day), remote: true,
+    <%= link_to "【所属長承認申請のお知らせ】", edit_user_path(@user, @applying_month, date: @first_day), remote: true,
     class: "#{@applying_month_count == 0 ? "link-not-applying" : "link-applying"}" %>
     <% if @applying_month_count !=0 %>
       <a class="information-display"><%= "勤怠申請（一ヶ月）が#{@applying_month_count}件あります。" %></a>

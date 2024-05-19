@@ -17,6 +17,8 @@ ActiveRecord::Schema.define(version: 20240417124026) do
 
   create_table "attendances", force: :cascade do |t|
     t.date "worked_on"
+    t.datetime "started_at"
+    t.datetime "finished_at"
     t.string "note"
     t.integer "user_id"
     t.datetime "schedule"
@@ -32,8 +34,6 @@ ActiveRecord::Schema.define(version: 20240417124026) do
     t.boolean "check_box", default: false
     t.date "month_first_day"
     t.string "month_request_status", default: "なし"
-    t.datetime "started_at"
-    t.datetime "finished_at"
     t.index ["month_first_day", "user_id"], name: "index_attendances_on_month_first_day_and_user_id", unique: true
     t.index ["user_id"], name: "index_attendances_on_user_id"
   end
@@ -52,14 +52,12 @@ ActiveRecord::Schema.define(version: 20240417124026) do
     t.string "password_digest"
     t.string "remember_digest"
     t.boolean "admin", default: false
-    t.datetime "work_time", default: "2024-04-13 22:30:00"
+    t.datetime "work_time", default: "2024-05-18 22:30:00"
     t.string "employee_number"
     t.string "uid"
     t.boolean "superior"
     t.string "affiliation"
     t.time "basic_work_time", default: "2000-01-01 23:00:00"
-    t.time "designated_work_end_time"
-    t.time "designated_work_start_time"
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
