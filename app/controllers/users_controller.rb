@@ -21,7 +21,6 @@ class UsersController < ApplicationController
 
 
 
-
   def application_send
     # ここで@approval_listのインスタンスを設定します。
     @approval_list = Attendance.find(params[:id])
@@ -63,8 +62,6 @@ class UsersController < ApplicationController
 
   
   def show
-    @user = User.find(params[:id]) 
-    
     if current_user.admin?
       redirect_to root_url
     else
@@ -96,30 +93,19 @@ class UsersController < ApplicationController
         @approval = approval
         @approval_superior = User.find_by(id: @approval.superior_id)
       end    
-  
-      # # 現在のユーザーの新しい勤怠申請を作成
-      if params[:attendance]
-        @attendance = current_user.attendances.build(attendance_params)
-        if @attendance.save
-          flash[:success] = '新規作成に成功しました。'
-        else
-          render 'show'
-        end
-      end
-      
-      @applying_month = Attendance.find_by(user_id: @user.id, month_first_day: @first_day)
       if @applying_month
-        if @applying_month.month_request_status != 'なし' || @applying_month.month_check_confirm == true
-          @applying_month_superior = User.find_by(id: @applying_month.month_request_superior)
+        if @applying_month.month_request_status != 'なし'
+        @applying_month_superior = User.find_by(id: @applying_month.month_request_superior)
+        @applying_month_count = Attendance.where(month_request_superior: current_user.id, month_request_status: '申請中').count
+        else
+          # @applying_monthが存在しない場合の処理をここに記述
+          # 例えば、エラーメッセージを設定する、あるいは何もしない等
+          flash[:alert] = '適用月のデータが存在しません。'
         end
-      else
-        # @applying_monthが存在しない場合の処理をここに記述
-        # 例えば、エラーメッセージを設定する、あるいは何もしない等
-        flash[:alert] = '適用月のデータが存在しません。'
-      end
-    end       
-  end    
-   
+      end       
+    end    
+  end     
+  
   def approvals_edit
   end
 
@@ -180,8 +166,8 @@ class UsersController < ApplicationController
   
 
   private  
-  
-  
+    
+    
 
   def approval_params
     params.require(:attendance).permit(:confirmation_status)
@@ -201,7 +187,3 @@ class UsersController < ApplicationController
     params.require(:attendance).permit(:superior_id, :worked_on, :confirmation_status)
   end
 end
-
-
-
-

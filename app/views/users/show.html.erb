@@ -27,14 +27,15 @@
   </table>
 </div>
 
-<% if @user.superior == true %>
+<% if current_user.superior == true %>
   <div class="various-notices">
-  <div class="various-notice">
-    <%= link_to "【所属長承認申請のお知らせ】", edit_user_path(@user, @applying_month, date: @first_day), remote: true,
-    class: "#{@applying_month_count == 0 ? "link-not-applying" : "link-applying"}" %>
-    <% if @applying_month_count !=0 %>
-      <a class="information-display"><%= "勤怠申請（一ヶ月）が#{@applying_month_count}件あります。" %></a>
-    <% end %>
+    <div class="various-notice">
+      <%= link_to "【所属長承認申請のお知らせ】", edit_user_path(@user, @applying_month, date: @first_day), remote: true,
+      class: "#{@applying_month_count == 0 ? "link-not-applying" : "link-applying"}" %>
+      <% if @applying_month_count != 0 %>
+        <a class="information-display"><%= "#{@applying_month_count}件の通知があります。" %></a>
+      <% end %>
+    </div>
   </div>
 <% end %>
 

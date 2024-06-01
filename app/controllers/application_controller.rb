@@ -6,7 +6,6 @@ class ApplicationController < ActionController::Base
 
   # beforフィルター
 
-  # paramsハッシュからユーザーを取得します。
   # def set_user
   #   @user = User.find(params[:id])
   # end
