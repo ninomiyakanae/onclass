@@ -10,13 +10,13 @@ class ApplicationController < ActionController::Base
   #   @user = User.find(params[:id])
   # end
   
-def set_user
-  @user = User.find_by(id: params[:id])
-  unless @user
-    flash[:danger] = "ユーザーが見つかりません"
-    redirect_to root_url
-  end
-end  
+  def set_user
+    @user = User.find_by(id: params[:id])
+    unless @user
+      flash[:danger] = "ユーザーが見つかりません"
+      redirect_to root_url
+    end
+  end  
 
   # ログイン済みのユーザーか確認します。
   def logged_in_user

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20240417124026) do
+ActiveRecord::Schema.define(version: 20240609151044) do
 
   create_table "approvals", force: :cascade do |t|
   end
@@ -34,6 +34,7 @@ ActiveRecord::Schema.define(version: 20240417124026) do
     t.boolean "check_box", default: false
     t.date "month_first_day"
     t.string "month_request_status", default: "なし"
+    t.integer "month_request_superior_id"
     t.index ["month_first_day", "user_id"], name: "index_attendances_on_month_first_day_and_user_id", unique: true
     t.index ["user_id"], name: "index_attendances_on_user_id"
   end

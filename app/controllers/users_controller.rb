@@ -20,27 +20,27 @@ class UsersController < ApplicationController
 
 
 
-
-  def application_send
+  
+  def approval_of_monthly_applications
     # ここで@approval_listのインスタンスを設定します。
     @approval_list = Attendance.find(params[:id])
-
- 
+  
     # 上長が選択されているかをチェックします。
     if params[:attendance][:superior_id].blank?
       flash[:danger] = '上長を選択してください。'
-      redirect_to user_path # 適切なパスに置き換えてください。
+      redirect_to user_path(current_user) # 適切なパスに置き換えてください。
     else
-      # 更新処理を行う
-      if @approval_list.update(approval_params)
-        flash[:success] =  "申請が更新されました。"
-        redirect_to user_path(current_user, @approval_list) # 成功時のリダイレクト先は適宜設定してください。
+      # month_request_superior_idとmonth_request_statusを更新する
+      if @approval_list.update(month_request_superior_id: params[:attendance][:superior_id], month_request_status: '申請中')
+        flash[:success] = "申請が更新されました。"
+        redirect_to user_path(current_user) # 成功時のリダイレクト先を適宜設定してください。
       else
-        render :user_path# エラーがある場合は編集ページを再表示
+        flash[:danger] = "申請の更新に失敗しました。"
+        redirect_to user_path(current_user) # エラーがある場合もリダイレクト先を適宜設定してください。
       end
     end
   end
-  
+    
   
   def index
     @users = User.paginate(page: params[:page], per_page: 10)
@@ -87,16 +87,21 @@ class UsersController < ApplicationController
         @att_up = att_up
       end
   
+      # 特定の日付(@first_day)に関連する勤怠データを取得し、@attendanceに格納します。
       @attendance = Attendance.find_by(worked_on: @first_day)
+      # 特定の月(@first_day)に関連する現在のユーザー(current_user)の勤怠データをすべて取得し、@approval_listに格納します。
       @approval_list = Attendance.where(month: @first_day).where(user_id: current_user)
       @approval_list.each do |approval|
         @approval = approval
         @approval_superior = User.find_by(id: @approval.superior_id)
       end    
+      
       if @applying_month
         if @applying_month.month_request_status != 'なし'
-        @applying_month_superior = User.find_by(id: @applying_month.month_request_superior)
-        @applying_month_count = Attendance.where(month_request_superior: current_user.id, month_request_status: '申請中').count
+        @applying_month_superior = Attendance.find_by(id: @applying_month.month_request_superior_id)
+        # このコードは、現在ログインしているユーザー（current_user）が、ユーザーの申請時に選択した上長のID（month_request_superior）であり、申請状態が「申請中」であるデータの件数を正確にカウントして @applying_month_count に格納します。
+        # current_user（現在ログインしているユーザー）が 選択した上長のID（month_request_superior）と同じであり、かつmonth_request_status（申請状態）が '申請中' であるデータの件数をカウントし、@applying_month_count に格納する
+        @applying_month_count = Attendance.where(month_request_superior_id: current_user.id, month_request_status: '申請中').count
         else
           # @applying_monthが存在しない場合の処理をここに記述
           # 例えば、エラーメッセージを設定する、あるいは何もしない等
@@ -170,7 +175,7 @@ class UsersController < ApplicationController
     
 
   def approval_params
-    params.require(:attendance).permit(:confirmation_status)
+    params.require(:attendance).permit(:month_request_superior_id, :month_request_status)
   end
 
   def user_params
