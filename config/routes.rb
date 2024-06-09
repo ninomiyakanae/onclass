@@ -26,7 +26,7 @@ Rails.application.routes.draw do
       get 'attendances/_fotm_overwork_info'
       # get '_approvals_edit'
       get 'approvals_edit'
-      patch 'users/application_send'    
+      patch 'users/approval_of_monthly_applications'    
       put 'users/create_send'    
       get '/users/:id/edit_basic_info', to: 'users#edit_basic_info'
       # get 'apply_for_approval'
