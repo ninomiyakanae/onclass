@@ -21,26 +21,7 @@ class UsersController < ApplicationController
 
 
   
-  def approval_of_monthly_applications
-    # ここで@approval_listのインスタンスを設定します。
-    @approval_list = Attendance.find(params[:id])
-  
-    # 上長が選択されているかをチェックします。
-    if params[:attendance][:superior_id].blank?
-      flash[:danger] = '上長を選択してください。'
-      redirect_to user_path(current_user) # 適切なパスに置き換えてください。
-    else
-      # month_request_superior_idとmonth_request_statusを更新する
-      if @approval_list.update(month_request_superior_id: params[:attendance][:superior_id], month_request_status: '申請中')
-        flash[:success] = "申請が更新されました。"
-        redirect_to user_path(current_user) # 成功時のリダイレクト先を適宜設定してください。
-      else
-        flash[:danger] = "申請の更新に失敗しました。"
-        redirect_to user_path(current_user) # エラーがある場合もリダイレクト先を適宜設定してください。
-      end
-    end
-  end
-    
+
   
   def index
     @users = User.paginate(page: params[:page], per_page: 10)
@@ -89,6 +70,8 @@ class UsersController < ApplicationController
   
       # 特定の日付(@first_day)に関連する勤怠データを取得し、@attendanceに格納します。
       @attendance = Attendance.find_by(worked_on: @first_day)
+      # attendancesテーブルのuser_idカラムが現在のユーザーのIDと一致するレコードを取得します。
+      # current_userは現在ログインしているユーザーを表すオブジェクトです。current_user.idはそのユーザーのIDを取得します。
       # 特定の月(@first_day)に関連する現在のユーザー(current_user)の勤怠データをすべて取得し、@approval_listに格納します。
       @approval_list = Attendance.where(month: @first_day).where(user_id: current_user)
       @approval_list.each do |approval|
@@ -110,6 +93,30 @@ class UsersController < ApplicationController
       end       
     end    
   end     
+  
+
+  def approval_of_monthly_applications
+    # params[:id]によって指定されたIDに基づいて、Attendanceテーブルから該当するレコードを一つ取得します。
+    # 取得したレコードを@approval_listという変数に格納します。
+    # # ここで@approval_listのインスタンスを設定します。
+    @approval_list = Attendance.find(params[:id])
+  
+    # 上長が選択されているかをチェックします。
+    if params[:attendance][:superior_id].blank?
+      flash[:danger] = '上長を選択してください。'
+      redirect_to user_path(current_user) # 適切なパスに置き換えてください。
+    else
+      # month_request_superior_idとmonth_request_statusを更新する
+      if @approval_list.update(month_request_superior_id: params[:attendance][:superior_id], month_request_status: '申請中')
+        flash[:success] = "申請が更新されました。"
+        redirect_to user_path(current_user) # 成功時のリダイレクト先を適宜設定してください。
+      else
+        flash[:danger] = "申請の更新に失敗しました。"
+        redirect_to user_path(current_user) # エラーがある場合もリダイレクト先を適宜設定してください。
+      end
+    end
+  end
+      
   
   def approvals_edit
   end
