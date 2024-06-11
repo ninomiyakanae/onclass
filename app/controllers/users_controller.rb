@@ -74,8 +74,11 @@ class UsersController < ApplicationController
       # current_userは現在ログインしているユーザーを表すオブジェクトです。current_user.idはそのユーザーのIDを取得します。
       # 特定の月(@first_day)に関連する現在のユーザー(current_user)の勤怠データをすべて取得し、@approval_listに格納します。
       @approval_list = Attendance.where(month: @first_day).where(user_id: current_user)
+      # @approval_listの各勤怠データについてループ処理を行います。
       @approval_list.each do |approval|
+        # ループ内の各勤怠データを@approvalに格納します。
         @approval = approval
+          # @approvalに関連する上司のID(superior_id)を使って、上司のユーザー情報を取得し、@approval_superiorに格納します。
         @approval_superior = User.find_by(id: @approval.superior_id)
       end    
       
