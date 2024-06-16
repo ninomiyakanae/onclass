@@ -129,16 +129,12 @@
     </tbody>
     
     <tfoot>
-      <!--rowspan:縦結合、colspan：横結合-->
       <tr>
-        <!--< td colspan="2">< %= sprintf('%.2f', @worked_sum * format_basic_info(@user.basic_work_time).to_f) %></td>-->
         <td colspan="6"></td>
         <td><%= format("%.2f", @total_working_times.to_f) %></td>
         <td colspan="6"></td>
         <td>
-            <!-- ログイン中のユーザーがいる場合に以下のフォームを表示します。 -->
          <% if current_user.present? %>
-                <!--< %= form_with(model: @approval_list, url: approvals_edit_user_path(@current_user, @first_day), local: true) do |f| %>-->
                 <%= form_with(model: @attendance, url: users_approval_of_monthly_applications_user_path(@user), method: :patch, local: true) do |f| %>
                   <div class="approval">
                     <p class="approval-btn">
@@ -155,8 +151,6 @@
   </div>
 </div>
 
-<!--モーダルウインドウ表示-->
 <div id="user-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
-<!--< div id="user-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>-->
 
 
