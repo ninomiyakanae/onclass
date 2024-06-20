@@ -84,27 +84,25 @@ class UsersController < ApplicationController
          flash[:alert] = '適用月のデータが存在しません。'
         end
       end       
-    end    
-  end     
+    end  
+  end
   
-
   def approval_of_monthly_applications
-   @approval_list = Attendance.find(params[:id])
-  
+    @approval_list = Attendance.find(params[:id])
+
     if params[:attendance][:superior_id].blank?
       flash[:danger] = '上長を選択してください。'
       redirect_to user_path(current_user)
     else
       if @approval_list.update(month_request_superior_id: params[:attendance][:superior_id], month_request_status: '申請中')
         flash[:success] = "申請が更新されました。"
-        redirect_to user_path(current_user) 
+        redirect_to user_path(current_user)
       else
         flash[:danger] = "申請の更新に失敗しました。"
         redirect_to user_path(current_user)
       end
     end
-  end
-      
+  end  
   
   def approvals_edit
   end
@@ -167,7 +165,7 @@ class UsersController < ApplicationController
 
   private  
     
-    
+
 
   def approval_params
     params.require(:attendance).permit(:month_request_superior_id, :month_request_status)
