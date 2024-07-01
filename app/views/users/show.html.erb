@@ -30,7 +30,7 @@
 <% if current_user.superior == true %>
   <div class="various-notices">
     <div class="various-notice">
-      <%= link_to "【所属長承認申請のお知らせ】", edit_user_path(@user, @applying_month, date: @first_day), remote: true,
+      <%= link_to "【所属長承認申請のお知らせ】", edit_user_path(@user, date: @first_day), remote: true,
       class: "#{@applying_month_count == 0 ? "link-not-applying" : "link-applying"}" %>
       <% if @applying_month_count != 0 %>
         <a class="information-display"><%= "#{@applying_month_count}件の通知があります。" %></a>

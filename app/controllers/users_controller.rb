@@ -41,7 +41,6 @@ class UsersController < ApplicationController
   end
 
 
-  
   def show
     if current_user.admin?
       redirect_to root_url
@@ -55,46 +54,47 @@ class UsersController < ApplicationController
       @notice_users.each do |user|
         # 何らかの処理
       end
-  
-      @attendances_list = Attendance.where.not(schedule: nil).where(overtime_check: false).where(confirmation: current_user.name)   
+
+      @attendances_list = Attendance.where.not(schedule: nil).where(overtime_check: false).where(confirmation: current_user.name)
       @endtime_notice_sum = @attendances_list.count
       @attendances_list.each do |att_notice|
-        @att_notice = att_notice  
+        @att_notice = att_notice
       end
-         
-      @att_update_list = Attendance.where(attendance_change_check: false).where(attendance_change_flag: true).where(confirmation: current_user.name)   
+
+      @att_update_list = Attendance.where(attendance_change_check: false).where(attendance_change_flag: true).where(confirmation: current_user.name)
       @att_update_sum = @att_update_list.count
       @att_update_list.each do |att_up|
         @att_up = att_up
       end
-  
 
       @attendance = Attendance.find_by(worked_on: @first_day)
-      @approval_list = Attendance.where(month: @first_day).where(user_id: current_user)
+
+      # @approval_list を現在ログインしているユーザーが承認を担当する申請情報でフィルタリング
+      @approval_list = Attendance.where(month_request_superior_id: current_user.id, month_request_status: '申請中')
+      # 申請中の件数をカウント
+      @applying_month_count = @approval_list.count
+
       @approval_list.each do |approval|
         @approval = approval
         @approval_superior = User.find_by(id: @approval.superior_id)
-      end    
-      
-      if @applying_month
-        if @applying_month.month_request_status != 'なし'
-        @applying_month_superior = Attendance.find_by(id: @applying_month.month_request_superior_id)
-        @applying_month_count = Attendance.where(month_request_superior_id: current_user.id, month_request_status: '申請中').count
-        else
-         flash[:alert] = '適用月のデータが存在しません。'
-        end
-      end       
-    end  
+      end
+    end
+
+    # approval_of_monthly_applicationsアクションを呼び出す
+    if params[:trigger] == 'approval'
+      approval_of_monthly_applications
+    end
   end
-  
+
   def approval_of_monthly_applications
-    @approval_list = Attendance.find(params[:id])
+    @attendance = Attendance.find(params[:id])
 
     if params[:attendance][:superior_id].blank?
       flash[:danger] = '上長を選択してください。'
       redirect_to user_path(current_user)
     else
-      if @approval_list.update(month_request_superior_id: params[:attendance][:superior_id], month_request_status: '申請中')
+      
+      if @attendance.update(month_request_superior_id: params[:attendance][:superior_id], month_request_status: '申請中')
         flash[:success] = "申請が更新されました。"
         redirect_to user_path(current_user)
       else
@@ -102,8 +102,8 @@ class UsersController < ApplicationController
         redirect_to user_path(current_user)
       end
     end
-  end  
-  
+  end
+
   def approvals_edit
   end
 
