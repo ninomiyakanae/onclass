@@ -115,3 +115,27 @@ p {
     // border:1px black solid;
 
 }
+
+
+/* 件数が0件の場合のスタイル */
+.link-not-applying {
+  color: black; /* 文字色を黒に設定 */
+}
+
+/* 件数が0件ではない場合のスタイル */
+.link-applying {
+  color: red; /* 文字色を赤に設定 */
+  
+}
+
+/* 件数が0件ではない場合のスタイル（カーソルを合わせたとき） */
+.link-applying:hover {
+  color: red; /* 文字色を赤のままに設定 */
+}
+
+/* link-applying クラスのスタイル */
+a.information-display {
+  color: red; /* 文字色を赤に設定 */
+  border: 1px solid red; /* 文字を赤の四角で囲む */
+  padding: 2px; /* 四角の内側に少しスペースを追加 */
+}
