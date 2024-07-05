@@ -1,0 +1,34 @@
+/* ポップアップのスタイル */
+.popup {
+  display: none; /* デフォルトでは表示しない */
+  position: fixed; /* 固定位置 */
+  z-index: 1; /* 前面に表示 */
+  left: 0;
+  top: 0;
+  width: 100%; /* 横幅は全体 */
+  height: 100%; /* 高さは全体 */
+  overflow: auto; /* コンテンツが溢れた場合にスクロール */
+  background-color: rgba(0,0,0,0.4); /* 背景色を半透明に */
+}
+
+.popup-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 上下中央に配置 */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* 横幅の設定 */
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}

@@ -29,6 +29,7 @@ Rails.application.routes.draw do
       patch 'users/approval_of_monthly_applications'    
       put 'users/create_send'    
       get '/users/:id/edit_basic_info', to: 'users#edit_basic_info'
+      get 'users/:id/pending_requests', to: 'users#pending_requests', as: 'pending_requests'
       # get 'apply_for_approval'
       # resources :users, only: [:show, :edit, :update]  # showアクションがcurrent_userのページに該当する場合
     end

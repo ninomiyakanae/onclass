@@ -1,4 +1,3 @@
-
 <% provide(:title, @user.name) %>
 <div>
   <table class="table table-bordered table-condensed user-table">
@@ -30,8 +29,8 @@
 <% if current_user.superior == true %>
   <div class="various-notices">
     <div class="various-notice">
-      <%= link_to "【所属長承認申請のお知らせ】", edit_user_path(@user, date: @first_day), remote: true,
-      class: "#{@applying_month_count == 0 ? "link-not-applying" : "link-applying"}" %>
+      <%= link_to "【所属長承認申請のお知らせ】", pending_requests_user_path(@user, date: @first_day), remote: true,
+      class: "#{@applying_month_count == 0 ? "link-not-applying" : "link-applying"}", data: { popup: true } %>
       <% if @applying_month_count != 0 %>
         <a class="information-display"><%= "#{@applying_month_count}件の通知があります。" %></a>
       <% end %>

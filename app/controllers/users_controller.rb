@@ -6,7 +6,14 @@ class UsersController < ApplicationController
   before_action :set_one_month, only: [:show, :approvals_edit]
   before_action :admin_or_correct_user, only: :show
 
-  
+
+  def pending_requests
+    @user = User.find(params[:id])
+    @first_day = params[:date] ? Date.parse(params[:date]) : Date.today.beginning_of_month
+    @attendances = @user.attendances.where(worked_on: @first_day.all_month)
+    render partial: 'pending_requests_modal', locals: { user: @user, attendances: @attendances }
+  end
+
   def update
     if @user.update_attributes(user_params)
       flash[:success] = "ユーザー情報を更新しました。"
